@@ -1,0 +1,68 @@
+<div class="container-fluid h-100">  
+  <div class="row h-100">
+    {{>dashboardNav}}
+    <div class="col-sm-9 col-md-10">      
+      <div style="padding: 30px">
+        <h3 class="font-weight-bold" style="font-size:1.8em;">Hello, {{user.name}}!</h3>        
+        <br>
+        <input class='btn btn-sm btn-light d-none' title='' type='file' id='file-input' name='attachedFile' accept='.csv' onchange='attachFiles(this);' multiple/>
+        <button class='btn btn-info btn-lg' onclick='uploadFiles(this)'>Upload Files</button>               
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-md-2"></div>
+          <div class="col-md-8">            
+            <div class="card card-outline-danger" id="progressStatusCard" style="display:none;">
+              <span class="pull-left clickable close-icon" data-effect="fadeOut"><i class="fa fa-times"></i></span>
+              <div class="card-block pl-2 pr-2" id="progressStatus"></div>
+            </div>
+          </div>
+        <div class="col-md-2"></div>
+      </div>      
+      <div class="card mt-2">
+        <div style="padding: 20px;">
+          <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th class="hidden">ID</th>
+                <th>Name</th>
+                <th>Uploaded By</th>
+                <th>Date</th>            
+                <th>size</th>                              
+              </tr>
+            </thead>
+            {{#each files as |file|}}
+              <tr>
+                <td>{{_id}}</td> 
+                <td>
+                  <a href="/api/S3/getObject/{{name}}" download='{{name}}'>{{name}}</a>
+                </td>
+                <td>{{user.name}}</td>
+                <td>{{formatDate createdAt}}</td>                            
+                <td><span class="badge badge-info">{{size}}</span></td>                                         
+              </tr>
+            {{/each}}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/public/scripts/dashboard/index.js"></script>
+<style>
+  #progressStatus {
+    width: 100%;    
+  }  
+  .progressBar {
+    width: 1%;
+    height: 15px;
+    background-color: #4CAF50;
+    text-align: center;
+    line-height: 12px;
+    color: black;
+    border-radius: 25px;
+  }
+  .close-icon {
+    cursor: pointer;
+  }   
+</style>

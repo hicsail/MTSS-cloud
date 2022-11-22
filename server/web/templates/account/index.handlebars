@@ -1,0 +1,29 @@
+<div class="container" style="padding-top: 60px">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">
+        {{user.name}}        
+      </h4>
+      <h6 class="card-subtitle mb-2 text-muted"><b>Joined On: </b>{{user.timeCreated}}</h6>      
+      {{#if user.roles.reviewer}}
+        <span class="badge badge-warning">Reviewer</span>
+      {{else}}
+        <span class="badge badge-warning">Investigator</span>
+      {{/if}}
+                 
+      <p class="card-text">
+      <form id="form">
+        <div id="formFields"></div>
+        <button type="submit" id="update" class="btn btn-primary">Update</button>        
+      </form>
+      <br>
+      <button id="reset" class="btn btn-primary" onclick="reset('{{user.email}}')">Reset password</button>           
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="/public/scripts/account.js"></script>
+<script>
+  joiFormValue('name', '{{user.name}}');
+  joiFormValue('email', '{{user.email}}');  
+</script>
+
