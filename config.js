@@ -24,7 +24,7 @@ const config = {
     production: process.env.BASE_URL,
     test: 'localhost:9090',
     local: process.env.BASE_URL,
-    $default: 'http://localhost:9000/'
+    $default: 'http://localhost:8000/'
   },
   port: {
     web: {
@@ -32,7 +32,7 @@ const config = {
       test: 9090,
       production: process.env.PORT,
       local: process.env.PORT,
-      $default: 9000
+      $default: 8000
     }
   },
   authAttempts: {
@@ -51,7 +51,7 @@ const config = {
         uri: {
           $filter: 'env',
           production: process.env.MONGODB_URI,
-          $default: 'mongodb://localhost:27017/'
+          $default: 'mongodb://mongo:27017/mtss'//'mongodb://localhost:27017/'
         },
         db: {
           $filter: 'env',
@@ -95,21 +95,21 @@ const config = {
   S3: {
     bucketName: {
       $filter: 'env',
-      production: process.env.bucketName, 
-      local: process.env.bucketName,     
+      production: process.env.BUCKET_NAME, 
+      local: process.env.BUCKET_NAME,     
       $default: 'mtss-cloud'
     },
     accessKeyId: {
       $filter: 'env',
-      production: process.env.accessKeyId, 
-      local: process.env.accessKeyId,     
-      $default: ''  
+      production: process.env.S3_ACCESS_KEY, 
+      local: process.env.S3_ACCESS_KEY,     
+      $default: ''
     },
     secretAccessKey: {
       $filter: 'env',
-      production: process.env.secretAccessKey, 
-      local: process.env.secretAccessKey,     
-      $default: ''  
+      production: process.env.S3_SECRET_ACCESS_KEY, 
+      local: process.env.S3_SECRET_ACCESS_KEY,     
+      $default: '' 
     }    
   }, 
   roles:[    

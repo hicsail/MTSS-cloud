@@ -1,17 +1,11 @@
-FROM ubuntu:16.04
-FROM mongo:3.4.5
-FROM node:8
+FROM ubuntu:18.04
+FROM node:14
 
-WORKDIR /usr/src/anchor
-COPY . /usr/src/anchor/
-
-RUN apt-get update
-
-#Needed to connect to MongoDB
-RUN apt-get install -y netcat
+WORKDIR /usr/src/mtss
+COPY . /usr/src/mtss/
 
 RUN npm install
 
 EXPOSE 9000
 
-CMD sh docker_run.sh
+CMD ["npm", "run", "start"]
