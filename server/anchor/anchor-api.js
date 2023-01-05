@@ -216,14 +216,13 @@ const register = function (server,serverOptions) {
         assign: 'validate',
         method: function (request,h) {
 
-          /*console.log(request.payload)
           const model = request.pre.model;
-          const { error, value } = (Joi.validate(JSON.parse(request.payload),Joi.array().items(model.routes.insertMany.payload)));
+          const { error, value } = (Joi.validate(request.payload),Joi.array().items(model.routes.insertMany.payload));
 
           if (error) {
             throw Boom.badRequest('Incorrect Payload', error);
           }
-          request.payload = value;*/
+          request.payload = value;
           return h.continue;
         }
       }, {

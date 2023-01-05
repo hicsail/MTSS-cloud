@@ -1002,8 +1002,7 @@ AnchorModel.routes = {
     scope: [],
     handler: async (request,h) => {
 
-      const model = request.pre.model;
-      console.log("sepi", request.payload, typeof request.payload)
+      const model = request.pre.model;      
       const payload = request.payload;
 
       if (request.auth.isAuthenticated) {

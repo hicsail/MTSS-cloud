@@ -46,48 +46,7 @@ function attachFiles(elem) {
         errorAlert(result.responseJSON.message);
       }
     }); 
-    AJAXCalls.push(call); 
-
-    /*$.ajax({
-      xhr: function() { //Upload progress
-        let xhr = new window.XMLHttpRequest();        
-        xhr.upload.addEventListener("progress", function(evt){
-          if (evt.lengthComputable) {
-            const percentComplete = (evt.loaded / evt.total) * 100;           
-            $("#progressBar" + i).width(percentComplete + '%');
-            $("#progressBarTitle" + i).empty().text(file['name'] + ': ' + percentComplete + '%');          
-          }
-        }, false);
-        return xhr;      
-      },
-      type: 'POST',
-      url: '/api/S3/saveFilesToBucket',    
-      data: formData, 
-      contentType: false,
-      cache: false,
-      processData: false,     
-      success: function (result) {
-        console.log("savefile", file['name'], i)        
-        $.ajax({      
-          type: 'POST',
-          url: '/api/files',    
-          data: {name: file['name'], size: file['size']},                        
-          success: function (result) {            
-            //successAlert("Successfully uploaded file.") 
-            console.log("updateDB", file['name'], i)  
-            if (i === files.length-1) {
-              location.reload();
-            }     
-          },
-          error: function (result) {
-            errorAlert(result.responseJSON.message);
-          }
-        });        
-      },
-      error: function (result) {
-        errorAlert(result.responseJSON.message);
-      }
-    });*/     
+    AJAXCalls.push(call);     
   }
 
   Promise.all(AJAXCalls).then(uploadedFiles => {

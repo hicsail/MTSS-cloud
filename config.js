@@ -103,13 +103,13 @@ const config = {
       $filter: 'env',
       production: process.env.S3_ACCESS_KEY, 
       local: process.env.S3_ACCESS_KEY,     
-      $default: 'AKIAR7IMRMF7VCRTSJO6'
+      $default: ''
     },
     secretAccessKey: {
       $filter: 'env',
       production: process.env.S3_SECRET_ACCESS_KEY, 
       local: process.env.S3_SECRET_ACCESS_KEY,     
-      $default: 'QHoakblTTmGxb45JTegl/Hx0aiMWMlC6ZhHjTNuT' 
+      $default: '' 
     }    
   }, 
   roles:[    
