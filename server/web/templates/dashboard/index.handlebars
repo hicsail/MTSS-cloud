@@ -28,7 +28,8 @@
                 <th>Name</th>
                 <th>Uploaded By</th>
                 <th>Date</th>            
-                <th>size</th>                              
+                <th>size</th>
+                <th class="hidden">Delete</th>                              
               </tr>
             </thead>
             {{#each files as |file|}}
@@ -39,7 +40,8 @@
                 </td>
                 <td>{{user.name}}</td>
                 <td>{{formatDate createdAt}}</td>                            
-                <td><span class="badge badge-info">{{size}}</span></td>                                         
+                <td><span class="badge badge-info">{{size}}</span></td>
+                <td><button class="btn btn-info" onClick="deleteFile('{{name}}', '{{_id}}')">Delete</button></td>                                          
               </tr>
             {{/each}}
           </table>

@@ -34,13 +34,15 @@ function attachFiles(elem) {
       contentType: false,
       cache: false,
       processData: false,     
-      success: function (result) {        
+      success: function (result) {
+        console.log("savefile", file['name'], i)        
         $.ajax({      
           type: 'POST',
           url: '/api/files',    
-          data: {name: file['name'], size: file['size']},              
+          data: {name: file['name'], size: file['size']},                        
           success: function (result) {            
             //successAlert("Successfully uploaded file.") 
+            console.log("updateDB", file['name'], i)  
             if (i === files.length-1) {
               location.reload();
             }     
@@ -60,6 +62,31 @@ function attachFiles(elem) {
 function uploadFiles(elem) {  
 
   $(elem).siblings("input").click();
+}
+
+function deleteFile(fileName, dbObjectId) {
+
+  $.ajax({      
+    type: 'DELETE',
+    url: '/api/S3/deleteFile/' + fileName,                                 
+    success: function (result) { 
+      //Also delete from DB     
+      $.ajax({      
+        type: 'DELETE',
+        url: '/api/files/' + dbObjectId,                                 
+        success: function (result) {                     
+          successAlert("Successfully deleted file.");
+          location.reload();           
+        },
+        error: function (result) {
+          errorAlert(result.responseJSON.message);
+        }
+      });          
+    },
+    error: function (result) {
+      errorAlert(result.responseJSON.message);
+    }
+  });
 }
 
 $(document).ready(function () {
