@@ -33,7 +33,7 @@ const register = function (server, options) {
         throw Boom.badRequest('Unable to upload file because ' + err.message);
       }
 
-      return "success";
+      return fileName;
     }
   }); 
 

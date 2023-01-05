@@ -24,6 +24,27 @@ class File extends AnchorModel {
     const files = await this.insertOne(document);
     return files[0];
   }
+
+  static async createMany(docs) { 
+    
+    for (const doc of docs)  {
+      Assert.ok(doc.userId, 'Missing userId argument.');
+      Assert.ok(doc.name, 'Missing name argument.');
+      Assert.ok(doc.size, 'Missing size argument.'); 
+
+      doc.createdAt = new Date(); 
+    }    
+    
+    /*let document = {
+      userId: doc.userId, //id of user who submitted 
+      name: doc.name,
+      size: doc.size,
+      createdAt: new Date()        
+    };*/         
+
+    const files = await this.insertMany(docs);
+    return files;
+  }
 }
 
 
@@ -46,7 +67,15 @@ File.routes = Hoek.applyToDefaults(AnchorModel.routes, {
       size: Joi.number().required()           
     }),
     scope: []    
-  }  
+  },
+  insertMany: {
+    payload: Joi.object({      
+      name: Joi.string().required(),
+      size: Joi.number().required()           
+    }), 
+    scope: [],
+    disabled: false    
+  }    
 });
 
 File.lookups = [

@@ -1003,9 +1003,16 @@ AnchorModel.routes = {
     handler: async (request,h) => {
 
       const model = request.pre.model;
+      console.log("sepi", request.payload, typeof request.payload)
       const payload = request.payload;
 
-      return await model.insertMany(payload);
+      if (request.auth.isAuthenticated) {
+
+        for (const doc of payload) {
+         doc.userId = String(request.auth.credentials.user._id); 
+        }       
+      } 
+      return await model.createMany(payload);
     },
     query: null
   },

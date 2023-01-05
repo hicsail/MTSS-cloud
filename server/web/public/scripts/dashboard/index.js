@@ -4,6 +4,9 @@ function attachFiles(elem) {
 
   $("#progressStatusCard").show();
   $("#progressStatus").empty();
+
+  const AJAXCalls = [];  
+  filesPayload = [];
   
   //upload and trasnfer files to the server separately 
   for (let i = 0; i < files.length; ++i) {
@@ -11,12 +14,41 @@ function attachFiles(elem) {
     const file = files[i];     
 
     let formData = new FormData();       
-    formData.append('file', file);    
+    formData.append('file', file);
+
+    filesPayload.push({'name': file['name'], 'size': file['size']});    
       
     $("#progressStatus").append("<br><p id='progressBarTitle" + i + "'>" + file['name'] + "</p>"); 
     $("#progressStatus").append("<div id='progressBar" + i + "' class='progressBar'></div>");
 
-    $.ajax({
+    const call = $.ajax({
+      xhr: function() { //Upload progress
+        let xhr = new window.XMLHttpRequest();        
+        xhr.upload.addEventListener("progress", function(evt){
+          if (evt.lengthComputable) {
+            const percentComplete = (evt.loaded / evt.total) * 100;           
+            $("#progressBar" + i).width(percentComplete + '%');
+            $("#progressBarTitle" + i).empty().text(file['name'] + ': ' + percentComplete + '%');          
+          }
+        }, false);
+        return xhr;      
+      },
+      type: 'POST',
+      url: '/api/S3/saveFilesToBucket',    
+      data: formData, 
+      contentType: false,
+      cache: false,
+      processData: false,     
+      success: function (result) {
+        //console.log("savefile", file['name'], i);            
+      },
+      error: function (result) {
+        errorAlert(result.responseJSON.message);
+      }
+    }); 
+    AJAXCalls.push(call); 
+
+    /*$.ajax({
       xhr: function() { //Upload progress
         let xhr = new window.XMLHttpRequest();        
         xhr.upload.addEventListener("progress", function(evt){
@@ -55,8 +87,27 @@ function attachFiles(elem) {
       error: function (result) {
         errorAlert(result.responseJSON.message);
       }
-    });     
-  }  
+    });*/     
+  }
+
+  Promise.all(AJAXCalls).then(uploadedFiles => {
+
+    filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));    
+    console.log(filesPayload)
+    $.ajax({      
+      type: 'POST',
+      url: '/api/files/insertMany', 
+      contentType: 'application/json',   
+      data: JSON.stringify(filesPayload),                        
+      success: function (result) {        
+        console.log(result);
+        location.reload();   
+      },
+      error: function (result) {
+        errorAlert(result.responseJSON.message);
+      }
+    });      
+  });  
 }
 
 function uploadFiles(elem) {  
