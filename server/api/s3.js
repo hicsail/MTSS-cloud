@@ -22,11 +22,11 @@ const register = function (server, options) {
         {
           assign: 'fileNameIsUnique',
           method: async function (request, h) {
-                      
-            const fileName = request.payload.file['hapi']['filename'];
-            const file = File.find({name: fileName});
 
-            if (file) {
+            const fileName = request.payload.file['hapi']['filename'];
+            const files = await File.find({name: fileName});
+            
+            if (files.length > 0) {
               throw Boom.badRequest("There already exists a file with the same name!");
             }
             else {
