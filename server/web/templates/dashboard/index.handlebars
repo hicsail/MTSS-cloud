@@ -50,8 +50,8 @@
                 <th>Name</th>
                 <th>Uploaded By</th>
                 <th>Date</th>            
-                <th>size</th>
-                <th>Delete</th>                              
+                <th>size</th>                
+                <th>Delete</th>                                            
               </tr>
             </thead>
             {{#each files as |file|}}
@@ -63,7 +63,7 @@
                 <td>{{user.name}}</td>
                 <td>{{formatDate createdAt}}</td>                            
                 <td><span class="badge badge-info">{{size}}</span></td>
-                <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}')" data-toggle="modal" data-target="#delete-file-modal">Delete</button></td>                                          
+                <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                                          
               </tr>
             {{/each}}
           </table>
