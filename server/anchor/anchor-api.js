@@ -217,12 +217,22 @@ const register = function (server,serverOptions) {
         method: function (request,h) {
 
           const model = request.pre.model;
-          const { error, value } = (Joi.validate(request.payload),Joi.array().items(model.routes.insertMany.payload));
+          const joiSchema = Joi.array().items(model.routes.insertMany.payload);
+          const obj = joiSchema.validate(request.payload);
+          console.log(request.payload, typeof request.payload)
+          //const { error, value } = (Joi.validate(JSON.parse(JSON.stringify(request.payload))),Joi.array().items(model.routes.insertMany.payload));
 
-          if (error) {
+          /*if (error) {
+            console.log(error)
             throw Boom.badRequest('Incorrect Payload', error);
           }
-          request.payload = value;
+          const obj = joiSchema.validate(request.payload);*/
+          
+          if (obj.error) {
+            throw Boom.badRequest('Incorrect Payload', obj.error);
+          }
+          request.payload = obj.value;
+          //request.payload = value;
           return h.continue;
         }
       }, {

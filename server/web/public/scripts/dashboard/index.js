@@ -51,8 +51,8 @@ function attachFiles(elem) {
 
   Promise.all(AJAXCalls).then(uploadedFiles => {
 
-    filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));    
-    console.log(filesPayload)
+    filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));
+        
     $.ajax({      
       type: 'POST',
       url: '/api/files/insertMany', 
