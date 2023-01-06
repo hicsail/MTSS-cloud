@@ -1,7 +1,6 @@
 'use strict';
 const Boom = require('boom');
-const User = require('../models/file');
-const ObjectId = require('mongodb').ObjectID;
+const File = require('../models/file');
 const AWS = require('aws-sdk');
 const Config = require('../../config');
 
@@ -18,7 +17,24 @@ const register = function (server, options) {
         output: 'stream',
         parse: true,
         maxBytes: 1000000*1024*1024
-      }         
+      },
+      pre: [
+        {
+          assign: 'fileNameIsUnique',
+          method: async function (request, h) {
+                      
+            const fileName = request.payload.file['hapi']['filename'];
+            const file = File.find({name: fileName});
+
+            if (file) {
+              throw Boom.badRequest("There already exists a file with the same name!");
+            }
+            else {
+              return h.continue;
+            }      
+          }
+        }
+      ]         
     },      
     handler: async function (request, h) {      
 
