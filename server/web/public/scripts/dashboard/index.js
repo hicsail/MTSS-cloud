@@ -52,7 +52,7 @@ function attachFiles(elem) {
   Promise.all(AJAXCalls).then(uploadedFiles => {
 
     filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));
-        
+
     $.ajax({      
       type: 'POST',
       url: '/api/files/insertMany', 
@@ -74,7 +74,10 @@ function uploadFiles(elem) {
   $(elem).siblings("input").click();
 }
 
-function deleteFile(fileName, dbObjectId) {
+function deleteFile() {
+
+  const fileName = $("#file-name").val();  
+  const fileObjectId = $("#file-object-id").val();
 
   $.ajax({      
     type: 'DELETE',
@@ -83,7 +86,7 @@ function deleteFile(fileName, dbObjectId) {
       //Also delete from DB     
       $.ajax({      
         type: 'DELETE',
-        url: '/api/files/' + dbObjectId,                                 
+        url: '/api/files/' + fileObjectId,                                 
         success: function (result) {                     
           successAlert("Successfully deleted file.");
           location.reload();           
@@ -97,6 +100,13 @@ function deleteFile(fileName, dbObjectId) {
       errorAlert(result.responseJSON.message);
     }
   });
+}
+
+function onClickDeleteFile(fileName, fileObjectId) {
+
+  $("#modal-title").text('Delete file ' + fileName);
+  $("#file-name").val(fileName);
+  $("#file-object-id").val(fileObjectId);
 }
 
 $(document).ready(function () {
