@@ -27,16 +27,21 @@ const register = function (server, options) {
             const files = await File.find({name: fileName});
             
             if (files.length > 0) {
-              throw Boom.badRequest("There already exists a file with the same name!");
+              //throw Boom.badRequest("There already exists a file with the same name!");
+              return false;
             }
             else {
-              return h.continue;
+              return true;;
             }      
           }
         }
       ]         
     },      
-    handler: async function (request, h) {      
+    handler: async function (request, h) { 
+
+      if (!request.pre.fileNameIsUnique) {
+        return {'success': false, 'fileName': ''};
+      }  
 
       const fileStream = request.payload.file;
       const fileName = fileStream['hapi']['filename'];
@@ -46,10 +51,10 @@ const register = function (server, options) {
         await uploadToS3(fileStream, fileName, bucketName);        
       } 
       catch (err) {        
-        throw Boom.badRequest('Unable to upload file because ' + err.message);
+        //throw Boom.badRequest('Unable to upload file because ' + err.message);
+        return {'success': false, 'fileName': ''};
       }
-
-      return fileName;
+      return {'success': true, 'fileName': fileName};
     }
   }); 
 

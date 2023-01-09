@@ -39,8 +39,7 @@ function attachFiles(elem) {
       contentType: false,
       cache: false,
       processData: false,     
-      success: function (result) {
-        //console.log("savefile", file['name'], i);            
+      success: function (result) {                   
       },
       error: function (result) {
         errorAlert(result.responseJSON.message);
@@ -49,23 +48,30 @@ function attachFiles(elem) {
     AJAXCalls.push(call);     
   }
 
-  Promise.all(AJAXCalls).then(uploadedFiles => {
-
+  Promise.all(AJAXCalls).then(AJAXCallsResults => {    
+    
+    const uploadedFiles = AJAXCallsResults.map(res => res.fileName);
+    const failedUploads = filesPayload.filter(file => !uploadedFiles.includes(file.name))
+                                          .map(file => file.name);   
     filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));
 
-    $.ajax({      
-      type: 'POST',
-      url: '/api/files/insertMany', 
-      contentType: 'application/json',   
-      data: JSON.stringify(filesPayload),                        
-      success: function (result) {        
-        console.log(result);
-        location.reload();   
-      },
-      error: function (result) {
-        errorAlert(result.responseJSON.message);
-      }
-    });      
+    if (failedUploads.length > 0) { 
+      errorAlert("unable to upload files " + failedUploads.join(', ') + '.'); 
+    }
+    if (filesPayload.length > 0) { //only update DB, if there has been a file ssuccesfully uploaded
+      $.ajax({      
+        type: 'POST',
+        url: '/api/files/insertMany', 
+        contentType: 'application/json',   
+        data: JSON.stringify(filesPayload),                        
+        success: function (result) {         
+          location.reload();   
+        },
+        error: function (result) {
+          errorAlert(result.responseJSON.message);
+        }
+      });
+    }       
   });  
 }
 

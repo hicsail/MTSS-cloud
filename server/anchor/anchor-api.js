@@ -130,8 +130,7 @@ const register = function (server,serverOptions) {
         method: function (request,h) {
           
           const model = request.pre.model;
-          const joiSchema = model.routes.create.payload;
-          //console.log(JoiToJson(joiSchema));
+          const joiSchema = model.routes.create.payload;          
           const obj = joiSchema.validate(request.payload);
           
           if (obj.error) {
@@ -218,21 +217,12 @@ const register = function (server,serverOptions) {
 
           const model = request.pre.model;
           const joiSchema = Joi.array().items(model.routes.insertMany.payload);
-          const obj = joiSchema.validate(request.payload);
-          console.log(request.payload, typeof request.payload)
-          //const { error, value } = (Joi.validate(JSON.parse(JSON.stringify(request.payload))),Joi.array().items(model.routes.insertMany.payload));
-
-          /*if (error) {
-            console.log(error)
-            throw Boom.badRequest('Incorrect Payload', error);
-          }
-          const obj = joiSchema.validate(request.payload);*/
+          const obj = joiSchema.validate(request.payload);       
           
           if (obj.error) {
             throw Boom.badRequest('Incorrect Payload', obj.error);
           }
-          request.payload = obj.value;
-          //request.payload = value;
+          request.payload = obj.value;          
           return h.continue;
         }
       }, {
