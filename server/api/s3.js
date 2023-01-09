@@ -26,9 +26,8 @@ const register = function (server, options) {
             const fileName = request.payload.file['hapi']['filename'];
             const files = await File.find({name: fileName});
             
-            if (files.length > 0) {
-              //throw Boom.badRequest("There already exists a file with the same name!");
-              return false;
+            if (files.length > 0) {              
+              return false; //since this api is supposed to be followed by another ajax api call, we return any way
             }
             else {
               return true;;

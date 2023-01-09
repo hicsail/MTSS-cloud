@@ -52,7 +52,7 @@ function attachFiles(elem) {
     
     const uploadedFiles = AJAXCallsResults.map(res => res.fileName);
     const failedUploads = filesPayload.filter(file => !uploadedFiles.includes(file.name))
-                                          .map(file => file.name);   
+                                      .map(file => file.name);   
     filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));
 
     if (failedUploads.length > 0) { 
@@ -128,6 +128,14 @@ $(document).ready(function () {
     lengthChange: false,          
     stateSave: true,
     dom: 'Bfrtip',
+    columnDefs: [
+      {
+        type: 'size',
+        "sType": "size",
+        "bSortable": true,
+        targets: 4,
+      },
+    ],
     buttons: [
       {
         extend: 'print',
@@ -171,5 +179,73 @@ $(document).ready(function () {
       'colvis'
     ]          
   }); 
-  table.columns( '.hidden' ).visible( false );   
+  table.columns( '.hidden' ).visible( false );
+
+  jQuery.fn.dataTableExt.oSort["size-desc"] = function (x, y) {
+    
+    const REMOVABLE = ['<span class="badge badge-info">', "</span>"];
+    const SIZE_LETTERS = ['kB', 'MB', 'GB', 'TB'];
+    for (const str of REMOVABLE) {
+      if (x.includes(str)) {
+        x = x.replace(str, '');
+      }
+      if (y.includes(str)) {
+        y = y.replace(str, '');
+      }
+    }
+    const xSizeLetterIndex = SIZE_LETTERS.indexOf(x.substring(x.length-2, x.length));
+    const ySizeLetterIndex = SIZE_LETTERS.indexOf(y.substring(y.length-2, y.length));        
+    
+    if (xSizeLetterIndex === ySizeLetterIndex) {
+      let xSubStrIdx2 = 2;
+      let ySubStrIdx2 = 2;
+      if (xSizeLetterIndex === -1) {
+        xSubStrIdx2 = 1
+      }
+      if (ySizeLetterIndex === -1) {
+        ySubStrIdx2 = 1
+      }
+      x = x.substring(0, x.length - xSubStrIdx2);
+      y = y.substring(0, y.length - ySubStrIdx2);
+
+      return (parseFloat(x) < parseFloat(y) ? 1 : ((parseFloat(x) > parseFloat(y)) ? -1 : 0));  
+    }
+    else {
+      return (xSizeLetterIndex < ySizeLetterIndex) ? 1 : ((xSizeLetterIndex > ySizeLetterIndex) ? -1 : 0);       
+    }   
+  };
+     
+  jQuery.fn.dataTableExt.oSort["size-asc"] = function (x, y) {
+    
+    const REMOVABLE = ['<span class="badge badge-info">', "</span>"];
+    const SIZE_LETTERS = ['kB', 'MB', 'GB', 'TB'];
+    for (const str of REMOVABLE) {
+      if (x.includes(str)) {
+        x = x.replace(str, '');
+      }
+      if (y.includes(str)) {
+        y = y.replace(str, '');
+      }
+    }
+    const xSizeLetterIndex = SIZE_LETTERS.indexOf(x.substring(x.length-2, x.length));
+    const ySizeLetterIndex = SIZE_LETTERS.indexOf(y.substring(y.length-2, y.length));
+
+    if (xSizeLetterIndex === ySizeLetterIndex) {
+      let xSubStrIdx2 = 2;
+      let ySubStrIdx2 = 2;
+      if (xSizeLetterIndex === -1) {
+        xSubStrIdx2 = 1
+      }
+      if (ySizeLetterIndex === -1) {
+        ySubStrIdx2 = 1
+      }
+      x = x.substring(0, x.length - xSubStrIdx2);
+      y = y.substring(0, y.length - ySubStrIdx2);
+
+      return (parseFloat(x) < parseFloat(y) ? -1 : ((parseFloat(x) > parseFloat(y)) ? 1 : 0));  
+    }
+    else {
+      return (xSizeLetterIndex < ySizeLetterIndex) ? -1 : ((xSizeLetterIndex > ySizeLetterIndex) ? 1 : 0);       
+    }      
+  }     
 });
