@@ -1,0 +1,27 @@
+<div class="card">
+  <div class="card-header font-weight-bold">
+    DF type and shape
+  </div>
+  <div class="card-body">
+    <h5 class="card-title"></h5>
+    <p class="card-text">A wide-format data file will typically have a smaller number of rows and a larger number of columns, while a long-format data file will have a larger number of rows and a smaller number of columns. </p>
+    <p>A long-format datafile will typically have one or more "id" columns that identify each observation, along with a "value" column that contains the observed data. A wide-format data file, on the other hand, will typically have separate columns for each observed variable</p>
+    <p class="font-weight-bold">Please confirm the data file shape identfied by the system<p>
+    <div class="form-check ml-4">
+      <input class="form-check-input" type="radio" value="long" id="long-data-shape" name="data-shape-radio">
+      <label class="form-check-label" for="long-data-shape">
+        Long
+      </label>
+    </div>
+    <div class="form-check ml-4">
+      <input class="form-check-input" type="radio" value="wide" id="wide-data-shape" name="data-shape-radio" checked>
+      <label class="form-check-label" for="wide-data-shape">
+        Wide
+      </label>
+    </div>
+    <div class="form-group w-50">
+      <label for="df-type" class="font-weight-bold">Please enter type of df</label>
+      <input type="text" class="form-control" id="df-type" placeholder="Enter df type here">    
+    </div>
+  </div>
+</div>

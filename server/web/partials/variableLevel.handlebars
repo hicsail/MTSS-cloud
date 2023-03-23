@@ -1,0 +1,46 @@
+<div class="card">
+  <div class="card-header font-weight-bold">
+    Variable Level
+  </div>
+  <div class="card-body">                        
+    <h5 class="card-title"></h5>
+    <p class="card-text">      
+      Please select variable levels in the drop down below.  
+    </p>    
+    <div class="dropdown">
+      <button class="btn btn-white dropdown-toggle" type="button" id="fields-type-dropdown-btn" data-toggle="dropdown">
+        Select Variable Level 
+      </button>
+      <div class="dropdown-menu" id="variable-level-dropdown-menu">
+        <form class="px-4 py-3">                                 
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="Demographic" checked value="Demographic" onchange="onchangeVariableLevelCB(this, event)">
+            <label class="form-check-label" for="Demographic">Demographic</label>
+          </div>
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="student" checked onchange="onchangeVariableLevelCB(this, event)" value="student">
+            <label class="form-check-label" for="student">
+              Student
+            </label>
+          </div>                              
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="classroom" checked onchange="onchangeVariableLevelCB(this, event)" value="classroom">
+            <label class="form-check-label" for="classroom">
+              Classroom
+            </label>
+          </div>
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="school" checked onchange="onchangeVariableLevelCB(this, event)" value="school">
+            <label class="form-check-label" for="school">School
+            </label>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="new-variable-level" class="font-weight-bold">Enter new variable level</label>
+            <input type="text" class="form-control" id="new-variable-level" placeholder="Enter new variable level" onkeydown="onkeydownVariableLevel(event, this)">    
+          </div>
+        </form>  
+      </div>
+    </div>    
+  </div>
+</div>

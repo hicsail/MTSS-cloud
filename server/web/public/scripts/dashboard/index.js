@@ -1,3 +1,78 @@
+function uploadFile(elem) {
+
+  const file = $(elem).prop("files")[0]; 
+  $("#readme-card-text").text("")
+  $("#readme-select").prepend("<option value='" + file['name'] + "' data-subtext='Uploaded by arezoo'>" + file['name'] + "</option>"); 
+  $("#readme-select").val(file['name']); 
+  $("#readme-select").selectpicker("refresh").trigger('change');  
+}
+
+function onchangeIdentifyingColCB(elem) {
+
+  const colName = $(elem).val();
+  if ($(elem).is(":checked")) {    
+    $("#identifying-cols-list").append("<p>" + colName + "</p>");
+  }
+  else {
+    $("#identifying-cols-list p").each(function( index ) { 
+      if ($(this).text() === colName) {
+        $(this).remove();  
+      } 
+    });   
+  }
+  
+}
+
+function onchangeFieldTypeCB(elem, event) {
+
+  event.preventDefault();
+  const type = $(elem).val();
+  if ($(elem).is(":checked")) {
+    $("#fields-type-table tbody").append("<tr><td>" + type + "</td><td>unknown</td></tr>");
+  }
+  else {    
+    $("#fields-type-table tbody tr").each(function( index ) { 
+      if ($(this).html().includes(type)) {
+        $(this).remove();  
+      }       
+    });    
+  }
+}
+
+function onkeydownVariableLevel(even, elem) {
+
+  if(event.keyCode == 13) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const value = $(elem).val();
+    $("#variable-level-dropdown-menu form").prepend('<div class="form-check ml-4">' +
+                                              '<input type="checkbox" class="form-check-input" id="' + value + '" checked onchange="onchangeFieldTypeCB(this, event)" value="' + value + '">' +
+                                              '<label class="form-check-label" for="' + value + '">' +
+                                              value + 
+                                              '</label>' + 
+                                              '</div>');    
+    return false;
+  }
+
+}
+
+function onkeydownFieldType(event, elem) {
+  
+  if(event.keyCode == 13) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const type = $(elem).val();
+    $("#fields-type-dropdown-menu form").prepend('<div class="form-check ml-4">' +
+                                              '<input type="checkbox" class="form-check-input" id="' + type + '" checked onchange="onchangeFieldTypeCB(this, event)" value="' + type + '">' +
+                                              '<label class="form-check-label" for="' + type + '">' +
+                                              type + 
+                                              '</label>' + 
+                                              '</div>');
+    $("#fields-type-table tbody").append("<tr><td>" + type + "</td><td>unknown</td></tr>");
+    return false;
+  }
+}
+
 function attachFiles(elem) {
   
   const files = $(elem).prop("files");  
@@ -75,7 +150,7 @@ function attachFiles(elem) {
   });  
 }
 
-function uploadFiles(elem) {  
+function onclickUpload(elem) {  
 
   $(elem).siblings("input").click();
 }

@@ -6,7 +6,7 @@
         <h3 class="font-weight-bold" style="font-size:1.8em;">Hello, {{user.name}}!</h3>        
         <br>
         <input class='btn btn-sm btn-light d-none' title='' type='file' id='file-input' name='attachedFile' accept='.csv' onchange='attachFiles(this);' multiple/>
-        <button class='btn btn-info btn-lg' onclick='uploadFiles(this)'>Upload Files</button>               
+        <button class='btn btn-info btn-lg' onclick='onclickUpload(this)'>Upload Files</button>               
       </div>
       <br>
       <div class="row">
@@ -50,7 +50,8 @@
                 <th>Name</th>
                 <th>Uploaded By</th>
                 <th>Date</th>            
-                <th>size</th>                
+                <th>Size</th>
+                <th>Validation</th>                
                 <th>Delete</th>                                            
               </tr>
             </thead>
@@ -63,10 +64,86 @@
                 <td>{{user.name}}</td>
                 <td>{{formatDate createdAt}}</td>                            
                 <td><span class="badge badge-info">{{size}}</span></td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="validation-dropdown-btn-{{_id}}" data-toggle="dropdown">
+                      Validation
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="validation-dropdown-btn-{{_id}}">
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pre-validation-modal">Pre-validation</a>
+                      <a class="dropdown-item disabled" href="#">validation</a>    
+                    </div>
+                  </div>
+                </td>
                 <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                                          
               </tr>
             {{/each}}
           </table>
+
+          <!-- Pre-validation modal -->          
+          <div class="modal fade" tabindex="-1" role="dialog" id="pre-validation-modal">
+            <div class="modal-dialog" role="document" style="min-width:50%;">
+              <div class="modal-content" style="max-height:900px; overflow-y:auto;">
+                <div class="modal-header">
+                  <h5 class="modal-title">Pre-validation</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <!--{{> anonymizationPrecheck}}                  
+                  {{> DFShapePrecheck}}
+                  {{> fieldsTypesPrecheck}} 
+                  {{> readmeSelection}} -->
+                  <ul class="nav nav-tabs">                  
+                    <li class="nav-item">
+                      <a class="nav-link bg-white active" href="#anonymization" data-toggle="tab" role="tab">Research Anonymization</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link bg-white" href="#df-shape" data-toggle="tab" role="tab">DF Shape</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link bg-white" href="#fields-types" data-toggle="tab" role="tab">Fields Types</a>
+                    </li>                    
+                    <li class="nav-item">
+                      <a class="nav-link bg-white" href="#readme-selection" data-toggle="tab" role="tab">Readme Selections</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link bg-white" href="#variable-level" data-toggle="tab" role="tab">Variable Level</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link bg-white" href="#naming-convention" data-toggle="tab" role="tab">Naming Convention</a>
+                    </li>                 
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show in active" id="anonymization" role="tabpanel">
+                      {{> anonymizationPrecheck}}
+                    </div>
+                    <div class="tab-pane fade" id="df-shape" role="tabpanel">
+                      {{> DFShapePrecheck}}
+                    </div>
+                    <div class="tab-pane fade" id="fields-types" role="tabpanel">
+                      {{> fieldsTypesPrecheck}}
+                    </div>
+                    <div class="tab-pane fade" id="readme-selection" role="tabpanel">
+                      {{> readmeSelection}}
+                    </div>
+                    <div class="tab-pane fade" id="variable-level" role="tabpanel">
+                      {{> variableLevel}}
+                    </div>
+                    <div class="tab-pane fade" id="naming-convention" role="tabpanel">
+                      Naming convention 
+                    </div>                    
+                  </div> 
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

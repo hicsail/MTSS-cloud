@@ -1,0 +1,72 @@
+<div class="card">
+  <div class="card-header font-weight-bold">
+    Types of fields
+  </div>
+  <div class="card-body">                        
+    <h5 class="card-title"></h5>
+    <p class="card-text">      
+      Our system has identified the following fields types. Please verfiy the identified fields type in the dropdown below.   
+    </p>
+    <div class="dropdown">
+      <button class="btn btn-white dropdown-toggle" type="button" id="fields-type-dropdown-btn" data-toggle="dropdown">
+        Select Fields Types 
+      </button>
+      <div class="dropdown-menu" id="fields-type-dropdown-menu">
+        <form class="px-4 py-3">                                 
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="Demographic" checked value="Demographic" onchange="onchangeFieldTypeCB(this, event)">
+            <label class="form-check-label" for="Demographic">Demographic</label>
+          </div>
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="ID" checked onchange="onchangeFieldTypeCB(this, event)" value="ID">
+            <label class="form-check-label" for="ID">
+              ID
+            </label>
+          </div>                              
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="Wave-school-level" checked onchange="onchangeFieldTypeCB(this, event)" value="Wave-school-level">
+            <label class="form-check-label" for="Wave-school-level">
+              Wave-school-level
+            </label>
+          </div>
+          <div class="form-check ml-4">
+            <input type="checkbox" class="form-check-input" id="Outcome" checked onchange="onchangeFieldTypeCB(this, event)" value="Outcome">
+            <label class="form-check-label" for="Outcome">Outcome
+            </label>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="new-field-type" class="font-weight-bold">Enter new field type</label>
+            <input type="text" class="form-control" id="new-field-type" placeholder="Enter new filed type" onkeydown="onkeydownFieldType(event, this)">    
+          </div>
+        </form>  
+      </div>
+    </div>  
+    <table class="table" id="fields-type-table">
+      <thead>
+        <tr>                              
+          <th scope="col">Field Type</th>                              
+          <th scope="col">Number of Identified Columns</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>                              
+          <td>ID</td>
+          <td>1</td>                             
+        </tr>
+        <tr>                              
+          <td>Demographic</td>
+          <td>3</td>                              
+        </tr>
+        <tr>                    
+          <td>Wave-school-level</td>
+          <td>1</td>
+        </tr>
+        <tr>                    
+          <td>Outcome</td>
+          <td>1</td>
+        </tr>                            
+      </tbody>
+    </table>
+  </div>
+</div>

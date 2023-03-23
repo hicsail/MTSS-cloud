@@ -1,0 +1,37 @@
+<div class="card">
+  <div class="card-header font-weight-bold">
+    Select/Upload a readme file including a metadata to describe the datafile
+  </div>
+  <div class="card-body">                        
+    <h5 class="card-title"></h5>
+    <p class="card-text" id="readme-card-text">
+      You need to assciate your datafile with a readme file. In order to do so, please either select a readme file from the menu below or upload a new readme file.
+    </p>   
+    <div class="row">
+      <div class="col">
+        <select class="selectpicker w-100 show-tick"
+                id="readme-select" 
+                data-live-search="true" 
+                data-style="btn-white" 
+                data-size="5"                                                    
+                data-title="Select readme file"
+                
+        >  
+          <option value="readme1.md" data-subtext="Uploaded by arezoo sadeghi">readme1.md</option>
+          <option value="readme2.md" data-subtext="Uploaded by arezoo sadeghi">readme2.md</option> 
+          <option value="readme3.md" data-subtext="Uploaded by arezoo sadeghi">readme3.md</option> 
+          <option value="readme4.md" data-subtext="Uploaded by arezoo sadeghi">readme4.md</option> 
+          <option value="readme5.md" data-subtext="Uploaded by arezoo sadeghi">readme5.md</option> 
+          <option value="readme6.md" data-subtext="Uploaded by arezoo sadeghi">readme6.md</option>
+        </select>
+      </div>
+      <div class="col text-right">
+        <input class='btn btn-sm btn-light d-none' title='' type='file' id='readme-file-input' name='attachedFile' accept='.md' onchange='uploadFile(this);'/>
+        <button class='btn btn-white w-100' onclick='onclickUpload(this)'>Upload new readme file</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/public/css/bootstrap-select.min.css"></link>
+<script type="text/javascript" src="/public/js/bootstrap-select.min.js"></script>                 
