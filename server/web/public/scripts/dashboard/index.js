@@ -1,3 +1,52 @@
+
+function onclickPreValidation(fileId, preValidationNotCompleted) {
+
+  console.log("preValidationNotCompleted", preValidationNotCompleted)
+  $("#file-id").val(fileId);
+  if (preValidationNotCompleted === true) {
+    $("#final-prevalidation-submit").prop( "disabled", true );  
+  }
+  else {
+    $("#final-prevalidation-submit").prop( "disabled", false ); 
+  }
+}
+
+function savePreValidation(stepName) {
+  
+  const validStepNames = ['anonymization', 'dfShape', 'fieldsTypes', 'readmeSelection', 'variableLevel'];
+  if (!validStepNames.includes(stepName)) {    
+    errorAlert('step name is not valid');
+  }
+  else {    
+    const fileId = $("#file-id").val();
+    const payload = {};
+    payload[stepName] = true;
+    $.ajax({      
+      type: 'PUT',
+      url: '/api/files/pre-validation/' + fileId, 
+      contentType: 'application/json',   
+      data: JSON.stringify(payload),                        
+      success: function (result) {
+        console.log(result.doc);
+        let preValidationCompleted = true;
+        for (const key in result.doc.preValidationSteps) {          
+          if (!result.doc.preValidationSteps[key]) {            
+            preValidationCompleted = false;
+            break;
+          }
+        }        
+        if (preValidationCompleted) {
+          $("#final-prevalidation-submit").prop( "disabled", false );
+        }             
+        //location.reload();   
+      },
+      error: function (result) {
+        errorAlert(result.responseJSON.message);
+      }
+    });  
+  }
+}
+
 function uploadFile(elem) {
 
   const file = $(elem).prop("files")[0]; 
@@ -5,6 +54,18 @@ function uploadFile(elem) {
   $("#readme-select").prepend("<option value='" + file['name'] + "' data-subtext='Uploaded by arezoo'>" + file['name'] + "</option>"); 
   $("#readme-select").val(file['name']); 
   $("#readme-select").selectpicker("refresh").trigger('change');  
+}
+
+function onchangeVariableLevelCB(elem) {
+
+  console.log("place holder")
+
+}
+
+function onclickIdentifyingColUserRadio(elem) {
+
+  $('.collapse').collapse('hide');
+  $('#' + $(elem).attr('aria-controls')).collapse('show');
 }
 
 function onchangeIdentifyingColCB(elem) {

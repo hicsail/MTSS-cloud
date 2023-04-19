@@ -12,13 +12,14 @@ class File extends AnchorModel {
       
     Assert.ok(doc.userId, 'Missing userId argument.');
     Assert.ok(doc.name, 'Missing name argument.');
-    Assert.ok(doc.size, 'Missing size argument.');
+    Assert.ok(doc.size, 'Missing size argument.');    
     
     let document = {
       userId: doc.userId, //id of user who submitted 
       name: doc.name,
       size: doc.size,
-      createdAt: new Date()        
+      createdAt: new Date(),
+      preValidationSteps: this.initializePreValidationStepsObj()        
     };          
 
     const files = await this.insertOne(document);
@@ -33,6 +34,7 @@ class File extends AnchorModel {
       Assert.ok(doc.size, 'Missing size argument.'); 
 
       doc.createdAt = new Date(); 
+      doc.preValidationSteps = this.initializePreValidationStepsObj();
     }    
     
     /*let document = {
@@ -44,6 +46,16 @@ class File extends AnchorModel {
 
     const files = await this.insertMany(docs);
     return files;
+  }
+
+  static initializePreValidationStepsObj() {
+    return {
+      anonymization: false,
+      dfShape: false,
+      fieldsTypes: false,
+      readmeSelection: false,
+      variableLevel: false
+    };
   }
 }
 
@@ -58,7 +70,13 @@ File.schema = Joi.object({
   createdAt: Joi.date().required()   
 });
 
-
+File.preValidationStepsPayload = Joi.object({
+  anonymization: Joi.boolean().optional(),
+  dfShape: Joi.boolean().optional(),
+  fieldsTypes: Joi.boolean().optional(),
+  readmeSelection: Joi.boolean().optional(),
+  variableLevel: Joi.boolean().optional()
+});
 
 File.routes = Hoek.applyToDefaults(AnchorModel.routes, {  
   create: {

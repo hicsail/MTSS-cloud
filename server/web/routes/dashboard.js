@@ -18,9 +18,16 @@ const register = function (server, options) {
       let files = await File.lookup({}, File.lookups);
       files = files.map((file) => {
               file['size'] = formatFileSize(file['size']);
+              //let preValidationSteps = [];
+              for (const key in file.preValidationSteps) {                
+                if (!file.preValidationSteps[key]) {
+                  file['preValidationNotCompleted'] = true;
+                  break;
+                } 
+              }             
               return file;
             }); 
-                  
+      console.log(files)            
       return h.view('dashboard/index', {
         user,
         projectName: Config.get('/projectName'),

@@ -7,46 +7,84 @@
       <p>Student Name</p>
       <p>Parent Name</p>
       <p>Teacher Information</p>                        
-    </div>                      
-    <p class="card-text">Please confirm your data frame doesn’t contain any additional identifying information by checking/uncheching the col from dropdown below</p>
-    <div class="btn-group">
-      <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-        Select columns with identifying information
-      </button>
-      <div class="dropdown-menu dropdown-menu-right">
-        <form class="px-4 py-3">                            
-          <div class="form-check ml-4">
-            <input class="form-check-input" type="checkbox" value="Student Name" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
-            <label class="form-check-label" for="identifying-col-1">
-              Student Name
-            </label>
+    </div>       
+    
+
+    <p class="card-text">Please make sure you data doesn't contain any identifying information by either removing the corresponding columns automatically or manually editing the dataset.</p>    
+
+    <div id="radio-containers" class="ml-4">
+
+      <div class="row">
+        <div class="form-check col">
+          <input class="form-check-input" type="radio" name="identifying-col-user-action" id="remove-col-automatically" onclick="onclickIdentifyingColUserRadio(this)" aria-controls="identifying-cols-dropdown">
+          <label class="form-check-label" for="remove-col-automatically">
+            Remove selected identifying columns automatically 
+          </label>
+        </div>
+        <div class="collapse col" id="identifying-cols-dropdown">
+          <div class="btn-group">
+            <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+              Select columns with identifying information
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <form class="px-4 py-3">                            
+                <div class="form-check ml-4">
+                  <input class="form-check-input" type="checkbox" value="Student Name" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
+                  <label class="form-check-label" for="identifying-col-1">
+                    Student Name
+                  </label>
+                </div>
+                <div class="form-check ml-4">
+                  <input class="form-check-input" type="checkbox" value="Parent Name" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
+                  <label class="form-check-label" for="identifying-col-1">
+                    Parent Name
+                  </label>
+                </div>
+                <div class="form-check ml-4">
+                  <input class="form-check-input" type="checkbox" value="Teacher Information" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
+                  <label class="form-check-label" for="identifying-col-1">
+                    Teacher Information
+                  </label>
+                </div>
+                <div class="form-check ml-4">
+                  <input class="form-check-input" type="checkbox" value="DOB" id="identifying-col-1" onchange="onchangeIdentifyingColCB(this)">
+                  <label class="form-check-label" for="identifying-col-1">
+                    DOB
+                  </label>
+                </div> 
+                <div class="form-check ml-4">
+                  <input class="form-check-input" type="checkbox" value="Address" id="identifying-col-1" onchange="onchangeIdentifyingColCB(this)">
+                  <label class="form-check-label" for="identifying-col-1">
+                    Address
+                  </label>
+                </div>                            
+              </form>
+            </div>
           </div>
-          <div class="form-check ml-4">
-            <input class="form-check-input" type="checkbox" value="Parent Name" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
-            <label class="form-check-label" for="identifying-col-1">
-              Parent Name
-            </label>
-          </div>
-          <div class="form-check ml-4">
-            <input class="form-check-input" type="checkbox" value="Teacher Information" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
-            <label class="form-check-label" for="identifying-col-1">
-              Teacher Information
-            </label>
-          </div>
-          <div class="form-check ml-4">
-            <input class="form-check-input" type="checkbox" value="DOB" id="identifying-col-1" onchange="onchangeIdentifyingColCB(this)">
-            <label class="form-check-label" for="identifying-col-1">
-              DOB
-            </label>
-          </div> 
-          <div class="form-check ml-4">
-            <input class="form-check-input" type="checkbox" value="Address" id="identifying-col-1" onchange="onchangeIdentifyingColCB(this)">
-            <label class="form-check-label" for="identifying-col-1">
-              Address
-            </label>
-          </div>                            
-        </form>
+        </div>
       </div>
-    </div>                          
+
+      <div class="row">
+        <div class="form-check col">
+          <input class="form-check-input" type="radio" name="identifying-col-user-action" id="edit-dataset" onclick="onclickIdentifyingColUserRadio(this)" aria-controls="upload-revised-df">
+          <label class="form-check-label" for="edit-dataset">
+            Edit dataset manually
+          </label>
+        </div>
+        <div class="collapse col" id="upload-revised-df">
+          <input class='btn btn-sm btn-light d-none' title='' type='file' id='file-input' name='attachedFile' accept='.csv''/>
+          <button class='btn btn-light btn-sm' onclick='onclickUpload(this)'>
+            Upload Edited DF
+          </button> 
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-info" onclick="savePreValidation('anonymization')">Save</button>
+      </div>
+    </div>
+    
   </div>
 </div>
