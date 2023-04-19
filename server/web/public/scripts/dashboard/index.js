@@ -1,14 +1,10 @@
 
-function onclickPreValidation(fileId, preValidationNotCompleted) {
+function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
 
-  console.log("preValidationNotCompleted", preValidationNotCompleted)
-  $("#file-id").val(fileId);
-  if (preValidationNotCompleted === true) {
-    $("#final-prevalidation-submit").prop( "disabled", true );  
-  }
-  else {
-    $("#final-prevalidation-submit").prop( "disabled", false ); 
-  }
+  $("#file-id").val(fileId); 
+  console.log($("#prevalidation-file-name"), fileName)
+  $("#prevalidation-file-name").text(fileName);
+  
 }
 
 function savePreValidation(stepName) {
@@ -20,14 +16,13 @@ function savePreValidation(stepName) {
   else {    
     const fileId = $("#file-id").val();
     const payload = {};
-    payload[stepName] = true;
+    payload[stepName] = true;    
     $.ajax({      
       type: 'PUT',
       url: '/api/files/pre-validation/' + fileId, 
       contentType: 'application/json',   
       data: JSON.stringify(payload),                        
-      success: function (result) {
-        console.log(result.doc);
+      success: function (result) {        
         let preValidationCompleted = true;
         for (const key in result.doc.preValidationSteps) {          
           if (!result.doc.preValidationSteps[key]) {            
@@ -36,9 +31,10 @@ function savePreValidation(stepName) {
           }
         }        
         if (preValidationCompleted) {
-          $("#final-prevalidation-submit").prop( "disabled", false );
-        }             
-        //location.reload();   
+          //$("#prevalidation-dropdown-link" + fileId).prop( "disabled", false );
+          successAlert("You have completed all pre-validation steps and now you can proceed with validating your dataset.")
+          location.reload();
+        }   
       },
       error: function (result) {
         errorAlert(result.responseJSON.message);

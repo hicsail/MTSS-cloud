@@ -65,17 +65,17 @@
                 <td>{{formatDate createdAt}}</td>                            
                 <td><span class="badge badge-info">{{size}}</span></td>
                 <td>
-                  <div class="dropdown">
+                  <div class="dropdown" id="validation-dropdown-{{_id}}">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="validation-dropdown-btn-{{_id}}" data-toggle="dropdown">
                       Validation
                     </button>
                     <div class="dropdown-menu" aria-labelledby="validation-dropdown-btn-{{_id}}">
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pre-validation-modal" onclick="onclickPreValidation('{{_id}}', {{file.preValidationNotCompleted}})">Pre-validation</a>
-                      <a class="dropdown-item {{#if file.preValidationNotCompleted}}disabled{{/if}}" href="#">validation</a>    
+                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pre-validation-modal" onclick="onclickPreValidation('{{_id}}', '{{name}}', {{file.preValidationNotCompleted}})">Pre-validation</a>
+                      <a class="dropdown-item {{#if file.preValidationNotCompleted}}disabled{{/if}}" href="#" id="prevalidation-dropdown-link-{{_id}}">validation</a>    
                     </div>
                   </div>
                 </td>
-                <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                                          
+                <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                           
               </tr>
             {{/each}}
           </table>
@@ -85,7 +85,7 @@
             <div class="modal-dialog" role="document" style="min-width:50%;">
               <div class="modal-content" style="max-height:900px; overflow-y:auto;">
                 <div class="modal-header">
-                  <h5 class="modal-title">Pre-validation</h5>
+                  <h5 class="modal-title font-weight-bold">Pre-validation steps for file <span id="prevalidation-file-name"></span></h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -137,8 +137,7 @@
                     </div>-->                    
                   </div> 
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-info" id="final-prevalidation-submit" disabled>Save And Submit</button>
+                <div class="modal-footer">                  
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
               </div>
