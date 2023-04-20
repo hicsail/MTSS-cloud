@@ -17,7 +17,7 @@ const register = function (server, options) {
       const user = request.auth.credentials.user;
       let files = await File.lookup({}, File.lookups);
       files = files.map((file) => {
-              file['size'] = formatFileSize(file['size']);              
+              file['size'] = formatFileSize(file['size']);
               for (const key in file.preValidationSteps) {                
                 if (!file.preValidationSteps[key]) {
                   file['preValidationNotCompleted'] = true;
@@ -46,7 +46,6 @@ function formatFileSize(size) {
   let i = Math.floor( Math.log(size) / Math.log(1024) );
   return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + '' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 };
-
 
 module.exports = {
   name: 'dashboard',
