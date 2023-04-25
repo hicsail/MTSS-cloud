@@ -285,9 +285,22 @@ function attachFiles(elem) {
   });  
 }
 
-function onclickUpload(elem) {  
+function uploadFiles(type) {
 
-  $(elem).siblings("input").click();
+  const validTypes = ['csv', 'video', 'image'];
+  const typeToExtension = {
+    'csv' :'.csv'
+  };
+  const $fileInputID = 'file-input';
+
+  if (!validTypes.includes(type)) {
+    errorAlert('Data type is not valid!');  
+  }
+  $("#file-input").prop('accept', '');
+  if (type in typeToExtension) {    
+    $("#" + $fileInputID).prop('accept', typeToExtension[type]);  
+  }  
+  $("#file-input").click();
 }
 
 function deleteFile() {

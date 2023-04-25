@@ -5,8 +5,17 @@
       <div style="padding: 30px">
         <h3 class="font-weight-bold" style="font-size:1.8em;">Hello, {{user.name}}!</h3>        
         <br>
-        <input class='btn btn-sm btn-light d-none' title='' type='file' id='file-input' name='attachedFile' accept='.csv' onchange='attachFiles(this);' multiple/>
-        <button class='btn btn-info btn-lg' onclick='onclickUpload(this)'>Upload Files</button>               
+        <input class='btn btn-sm btn-light d-none' title='' type='file' id='file-input' name='attachedFile' onchange='attachFiles(this);' multiple/>        
+        <div class="dropdown show">
+          <a class="btn btn-info btn-lg dropdown-toggle" href="#" role="button" id="upload-files-dropdown" data-toggle="dropdown">
+            Upload Files
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" onclick="uploadFiles('csv')" role="button">CSV files</a>
+            <a class="dropdown-item" onclick="uploadFiles('video')" role="button">videos</a>
+            <a class="dropdown-item" onclick="uploadFiles('image')" role"button">images</a>
+          </div>
+        </div>               
       </div>
       <br>
       <div class="row">
