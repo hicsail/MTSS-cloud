@@ -51,6 +51,7 @@ class File extends AnchorModel {
   static initializePreValidationStepsObj() {
     return {
       anonymization: false,
+      uniqueIdentifier: false,
       dfShape: false,
       fieldsTypes: false,
       readmeSelection: false,
@@ -75,7 +76,8 @@ File.preValidationStepsPayload = Joi.object({
   dfShape: Joi.boolean().optional(),
   fieldsTypes: Joi.boolean().optional(),
   readmeSelection: Joi.boolean().optional(),
-  variableLevel: Joi.boolean().optional()
+  variableLevel: Joi.boolean().optional(),
+  uniqueIdentifier: Joi.boolean().optional()
 });
 
 File.routes = Hoek.applyToDefaults(AnchorModel.routes, {  

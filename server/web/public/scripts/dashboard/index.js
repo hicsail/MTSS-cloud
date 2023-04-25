@@ -104,7 +104,7 @@ function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
 
 function savePreValidation(stepName) {
   
-  const validStepNames = ['anonymization', 'dfShape', 'fieldsTypes', 'readmeSelection', 'variableLevel'];
+  const validStepNames = ['anonymization', 'dfShape', 'fieldsTypes', 'readmeSelection', 'variableLevel', 'uniqueIdentifier'];
   if (!validStepNames.includes(stepName)) {    
     errorAlert('step name is not valid');
   }
@@ -117,7 +117,7 @@ function savePreValidation(stepName) {
       url: '/api/files/pre-validation/' + fileId, 
       contentType: 'application/json',   
       data: JSON.stringify(payload),                        
-      success: function (result) {        
+      success: function (result) {            
         let preValidationCompleted = true;
         for (const key in result.doc.preValidationSteps) {          
           if (!result.doc.preValidationSteps[key]) {            
@@ -128,7 +128,7 @@ function savePreValidation(stepName) {
         if (preValidationCompleted) {
           //$("#prevalidation-dropdown-link" + fileId).prop( "disabled", false );
           successAlert("You have completed all pre-validation steps and now you can proceed with validating your dataset.")
-          location.reload();
+          //location.reload();
         }   
       },
       error: function (result) {

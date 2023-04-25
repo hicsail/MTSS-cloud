@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-header font-weight-bold">Anonymization (Identify columns with potentially identifying information)</div>
+  <div class="card-header font-weight-bold">Identify columns with potentially identifying information</div>
   <div class="card-body">
     <h5 class="card-title"></h5>
     <p class="card-text">Our system has identifed the following columns to have potentially identifying information.</p>
@@ -86,5 +86,34 @@
       </div>
     </div>
     
+  </div>
+</div>
+<div class="card">
+  <div class="card-header font-weight-bold">
+    Identifying columns as the unique identifier 
+  </div>
+  <div class="card-body">    
+    <p>Please confirm the column as the unique identifier in the dropdown below.</p>
+    <select class="selectpicker show-tick"
+            id="readme-select" 
+            data-live-search="true" 
+            data-style="btn-white" 
+            data-size="5"                                                    
+            data-title="Select unique identifier"
+                
+    >  
+      <option value="col1">Col1</option>
+      <option value="col2" selected>Col2</option> 
+      <option value="col3">Col3</option> 
+      <option value="col4">Col4</option> 
+      <option value="col5">Col5</option> 
+      <option value="col6">Col6</option>
+    </select>
+    <br>
+    <div class="row mt-2">
+      <div class="col">
+        <button class="btn btn-info" onclick="savePreValidation('uniqueIdentifier')">Save</button>
+      </div>
+    </div>      
   </div>
 </div>
