@@ -1,4 +1,4 @@
-function getFieldsTypesColsSelectHTML(dataCols, fieldType, selectedCols=[]) {
+/*function getFieldsTypesColsSelectHTML(dataCols, fieldType, selectedCols=[]) {
 
   let colSelectHTML = '<select class="fields-types-cols-select"' + 
                         'onchange="onchangeFieldsTypesColsSelect(this,' +  "'" + fieldType + "'" + ')"' +
@@ -94,9 +94,9 @@ function onkeydownFieldType(event, elem) {
     $('.fields-types-cols-select').selectpicker();
     return false;
   }
-}
+}*/
 
-function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
+/*function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
 
   $("#file-id").val(fileId);   
   $("#prevalidation-file-name").text(fileName);  
@@ -136,24 +136,24 @@ function savePreValidation(stepName) {
       }
     });  
   }
-}
+}*/
 
-function uploadFile(elem) {
+/*function uploadFile(elem) {
 
   const file = $(elem).prop("files")[0]; 
   $("#readme-card-text").text("")
   $("#readme-select").prepend("<option value='" + file['name'] + "' data-subtext='Uploaded by arezoo'>" + file['name'] + "</option>"); 
   $("#readme-select").val(file['name']); 
   $("#readme-select").selectpicker("refresh").trigger('change');  
-}
+}*/
 
-function onchangeVariableLevelCB(elem) {
+/*function onchangeVariableLevelCB(elem) {
 
   console.log("place holder")
 
-}
+}*/
 
-function onclickIdentifyingColUserRadio(elem) {
+/*function onclickIdentifyingColUserRadio(elem) {
 
   $('.collapse').collapse('hide');
   $('#' + $(elem).attr('aria-controls')).collapse('show');
@@ -173,9 +173,9 @@ function onchangeIdentifyingColCB(elem) {
     });   
   }
   
-}
+}*/
 
-function onchangeFieldTypeCB(elem, event) {
+/*function onchangeFieldTypeCB(elem, event) {
 
   event.preventDefault();
   const type = $(elem).val();
@@ -189,9 +189,9 @@ function onchangeFieldTypeCB(elem, event) {
       }       
     });    
   }
-}
+}*/
 
-function onkeydownVariableLevel(even, elem) {
+/*function onkeydownVariableLevel(even, elem) {
 
   if(event.keyCode == 13) {
     event.preventDefault();
@@ -206,7 +206,7 @@ function onkeydownVariableLevel(even, elem) {
     return false;
   }
 
-}
+}*/
 
 function attachFiles(elem) {
   
@@ -337,6 +337,8 @@ function onClickDeleteFile(fileName, fileObjectId) {
   $("#file-name").val(fileName);
   $("#file-object-id").val(fileObjectId);
 }
+
+//-------------------------------------------------------------------------------
 
 $(document).ready(function () {
 
