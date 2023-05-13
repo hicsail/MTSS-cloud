@@ -1,3 +1,8 @@
+function onclickAnonymizationTab() {
+
+  console.log("Anonymization tab clicked!");
+}
+
 function onclickIdentifyingColUserRadio(elem) {
 
   $('.collapse').collapse('hide');

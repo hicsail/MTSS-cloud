@@ -19,6 +19,7 @@ class File extends AnchorModel {
       name: doc.name,
       size: doc.size,
       createdAt: new Date(),
+      variablesHierarchy: null,
       preValidationSteps: this.initializePreValidationStepsObj()        
     };          
 
@@ -35,6 +36,7 @@ class File extends AnchorModel {
 
       doc.createdAt = new Date(); 
       doc.preValidationSteps = this.initializePreValidationStepsObj();
+      doc.variablesHierarchy = null;
     }    
     
     /*let document = {
@@ -78,6 +80,10 @@ File.preValidationStepsPayload = Joi.object({
   readmeSelection: Joi.boolean().optional(),
   variableLevel: Joi.boolean().optional(),
   uniqueIdentifier: Joi.boolean().optional()
+});
+
+File.variablesHierarchyPayload = Joi.object({
+  variablesHierarchy: Joi.object().required()
 });
 
 File.routes = Hoek.applyToDefaults(AnchorModel.routes, {  

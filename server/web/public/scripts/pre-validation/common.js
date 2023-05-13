@@ -1,7 +1,9 @@
 function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
 
   $("#file-id").val(fileId);   
-  $("#prevalidation-file-name").text(fileName);  
+  $("#prevalidation-file-name").text(fileName); 
+  $("#anonymization").click();
+  onclickAnonymizationTab(); //to always open the first tab 
 }
 
 function savePreValidation(stepName) {
@@ -31,7 +33,8 @@ function savePreValidation(stepName) {
           //$("#prevalidation-dropdown-link" + fileId).prop( "disabled", false );
           successAlert("You have completed all pre-validation steps and now you can proceed with validating your dataset.")
           //location.reload();
-        }   
+        }
+        saveVariableHierarchy(fileId);   
       },
       error: function (result) {
         errorAlert(result.responseJSON.message);
