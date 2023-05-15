@@ -4,9 +4,9 @@
   </div>
   <div class="card-body">                        
     <h5 class="card-title"></h5>
-    <p class="card-text">      
+    <!--<p class="card-text">      
       Please select variable levels in the drop down below.  
-    </p>    
+    </p>-->    
     <!--<div class="dropdown">
       <button class="btn btn-white dropdown-toggle" type="button" id="fields-type-dropdown-btn" data-toggle="dropdown">
         Select Variable Level 
@@ -47,6 +47,7 @@
         <p class="font-weight-bold">Select Variable To Add</p>
         <select class="selectpicker w-100 show-tick"
                 id="variables-select" 
+                onchange="onchangeAddVarSelect()"
                 data-live-search="true" 
                 data-style="btn-white" 
                 data-size="5"                                                    
@@ -58,7 +59,8 @@
       <div class="col d-none" id="variables-parent-col-wrapper">
         <p class="font-weight-bold">Select Parent</p>
         <select class="selectpicker w-100 show-tick"
-                id="variables-parent-select" 
+                id="variables-parent-select"
+                onchange="onchangeParentVarSelect()" 
                 data-live-search="true" 
                 data-style="btn-white" 
                 data-size="5"                                                    
@@ -68,28 +70,31 @@
         </select>
       </div>
       <div class="col d-none" id="remove-variable-col-wrapper">
-        <p class="font-weight-bold">Select Variable To remove</p>
-        <select class="selectpicker w-100 show-tick"
-                onchange="removeVariable()"
+        <div class="row">
+          <div class="col">
+            <p class="font-weight-bold">Select Variable To remove</p>
+            <select class="selectpicker w-100 show-tick"
+                onchange="onchangeRemoveVariable()"
                 id="remove-variable-select" 
                 data-live-search="true" 
                 data-style="btn-white" 
                 data-size="5"                                                    
-                data-title="Select Variable To Remove "
-                
-        >          
-        </select>
+                data-title="Select Variable To Remove "                
+            >          
+            </select>
+          </div>
+          <div class="col">
+            <div class="form-check ml-4">
+              <input class="form-check-input" type="checkbox" id="remove-strict-check">
+              <label class="form-check-label" for="remove-strict-check">
+                Strict Mode
+              </label>
+            </div>
+          </div>
+        </div>      
       </div>
     </div>
-    <br>
-    <div class="row">
-      <div class="col">
-        <button class="btn btn-info" onclick="addNode()">Add Node</button>
-      </div>
-      <div class="col">
-        <button class="btn btn-info" onclick="resetViz()">Reset</button>
-      </div>
-    </div>    
+    <br>      
     <div class="row">
       <div class="col text-center pt-4">
         <svg width="400" height="220" id="tree-layout">
@@ -105,9 +110,10 @@
         </svg> 
       </div>
     </div>        
-    <div class="row">
+    <div class="row">      
       <div class="col">
         <button class="btn btn-info" onclick="savePreValidation('variableLevel')">Save</button>
+        <button class="btn btn-info" onclick="resetViz()">Reset</button>
       </div>      
     </div>    
   </div>

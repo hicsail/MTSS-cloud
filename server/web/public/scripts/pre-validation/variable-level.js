@@ -110,18 +110,36 @@ function onkeydownVariableLevel(even, elem) {
 
 }
 
-function removeVariable() {
+function onchangeRemoveVariable() {
 
 	const node = $("#remove-variable-select").val();
-	removeNodeFromHierarchy(data, node, false);	
-	clearSVG();	
-	renderTreeLayout(data);
-	renderPackedCircles(data);
+	const strictMode = $('#remove-strict-check').is(':checked')
+	const nodeRemoved = removeNodeFromHierarchy(data, node, strictMode);
 	removeSelectedOption("remove-variable-select");
-	addOptionToSelectElem("variables-select", node);
+	if (nodeRemoved) {
+		clearSVG();	
+		renderTreeLayout(data);
+		renderPackedCircles(data);		
+		addOptionToSelectElem("variables-select", node);	
+	}	
 }
 
-function addNode() { //we should ahve agolobal var vis =[{'data': null, 'svg': }], to track list of visulisation 
+function onchangeAddVarSelect() {
+
+	if (!data || Object.keys(data).length === 0) {
+		onclickAddNode();
+	}
+	else {
+		resetSelectPicker("variables-parent-select");
+	}
+
+}
+
+function onchangeParentVarSelect() {
+	onclickAddNode();
+}
+
+function onclickAddNode() { //we should ahve agolobal var vis =[{'data': null, 'svg': }], to track list of visulisation 
 
 	const node = $("#variables-select").val();
 	const parent = $("#variables-parent-select").val();	
@@ -151,7 +169,7 @@ function addNode() { //we should ahve agolobal var vis =[{'data': null, 'svg': }
 	makeElemVisible("remove-variable-col-wrapper");
 	addOptionToSelectElem("remove-variable-select", node);
 	addOptionToSelectElem("variables-parent-select", node);
-	resetSelectPicker("variables-parent-select");
+	//resetSelectPicker("variables-parent-select");
 }
 
 /*
@@ -187,7 +205,7 @@ function addNodeToHierarchy(hierarchy, parent, node) {
 * meaning the node parameter passed to object is found in hierarchy parameter.
 * This function works in two modes:
 * If strict mode is set to true, the node along with its sub-tree gets removed
-* if strcit mode is set to false, the subtree belonging to node hets attached to parent element. 
+* if strict mode is set to false, the subtree belonging to node hets attached to parent element. 
 */
 function removeNodeFromHierarchy(hierarchy, node, strictMode, parent=null) {
 
@@ -195,8 +213,8 @@ function removeNodeFromHierarchy(hierarchy, node, strictMode, parent=null) {
 		return false;
 	}
 	if (!parent && hierarchy['name'] === node) {
-		if (strictMode) {
-			errorAlert("You can't remove the root node in strict mode!");
+		if (!strictMode) {
+			errorAlert("You can't remove the root node in non-strict mode!");
 			return false;
 		}
 
@@ -207,7 +225,7 @@ function removeNodeFromHierarchy(hierarchy, node, strictMode, parent=null) {
 		return true;
 	}
 	else if (parent && hierarchy['name'] === node) {
-		if (strictMode) {
+		if (!strictMode) {
 			parent['children'].push(...hierarchy['children']);
 		}		
 		parent['children'] = parent['children'].filter((elem, index) => {  			
@@ -300,7 +318,10 @@ function renderPackedCircles(data) {
 		return;
 	}
 	
-	var packLayout = d3.pack().size([300, 300]).padding(10);
+	var packLayout = d3.pack().size([300, 300])
+					   .padding(function(d) { 					   		
+					   		return d.children === undefined ? 5 : 20;	
+					   });
 
 	var rootNode = d3.hierarchy(data)
 
@@ -321,9 +342,9 @@ function renderPackedCircles(data) {
 
 	nodes
 	.append('text')
-	.attr('dy', 4)
+	.attr('dy', 7)
 	.text(function(d) {
-		return d.children === undefined ? d.data.name : '';
+		return d.children === undefined ? d.data.name : '';		
 	})	
 }
 
