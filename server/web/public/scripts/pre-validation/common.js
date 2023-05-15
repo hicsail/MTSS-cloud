@@ -2,8 +2,7 @@ function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
 
   $("#file-id").val(fileId);   
   $("#prevalidation-file-name").text(fileName); 
-  $("#anonymization").click();
-  onclickAnonymizationTab(); //to always open the first tab 
+  $('#pre-validation-tabs a:first').click(); //to always open the first tab   
 }
 
 function savePreValidation(stepName) {
