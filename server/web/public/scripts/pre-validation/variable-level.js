@@ -136,6 +136,7 @@ function onchangeAddVarSelect() {
 }
 
 function onchangeParentVarSelect() {
+
 	onclickAddNode();
 }
 
@@ -245,7 +246,16 @@ function removeNodeFromHierarchy(hierarchy, node, strictMode, parent=null) {
 
 function resetViz() {
 
-	clearSVG();	
+	data = null; 
+	clearSVG();
+	const addVars = ['var1', 'var2', 'var3', 'var4', 'var5', 'var6', 'var9', 'var10'];
+	const removeVars = [];
+	const parentVars = [];
+	attachOptionsToSelectElem("variables-select", addVars);
+	makeElemInvisible("variables-parent-col-wrapper");
+	makeElemInvisible("remove-variable-col-wrapper");
+	attachOptionsToSelectElem("remove-variable-select", removeVars, "remove-variable-col-wrapper");
+	attachOptionsToSelectElem("variables-parent-select", parentVars, "variables-parent-col-wrapper");
 }
 
 function clearSVG() {
