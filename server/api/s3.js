@@ -8,7 +8,7 @@ const register = function (server, options) {
 
   server.route({
     method: 'POST',
-    path: '/api/S3/saveFilesToBucket',
+    path: '/api/S3/saveFilesToBucket/{fileType?}',
     options: {
       auth: {
         strategies: ['simple', 'session']        
@@ -45,9 +45,10 @@ const register = function (server, options) {
       const fileStream = request.payload.file;
       const fileName = fileStream['hapi']['filename'];
       const bucketName = Config.get('/S3/bucketName'); 
+      const fileType = request.params.fileType;
       
       try {
-        await uploadToS3(fileStream, fileName, bucketName);        
+        await uploadToS3(fileStream, fileName, bucketName, fileType);        
       } 
       catch (err) {        
         //throw Boom.badRequest('Unable to upload file because ' + err.message);
@@ -59,7 +60,7 @@ const register = function (server, options) {
 
   server.route({
     method: 'GET',
-    path: '/api/S3/getObject/{fileName}',
+    path: '/api/S3/getObject/{fileName}/{fileType?}',
     options: {
       auth: {
         strategies: ['simple', 'session']        
@@ -69,10 +70,11 @@ const register = function (server, options) {
 
       let fileStream;
       const fileName = request.params.fileName;
-      const bucketName = Config.get('/S3/bucketName'); 
+      const bucketName = Config.get('/S3/bucketName');
+      const fileType = request.params.fileType; 
       
       try {
-        fileStream = await getObjectFromS3(fileName, bucketName);             
+        fileStream = await getObjectFromS3(fileName, bucketName, fileType);             
       } 
       catch (err) {        
         throw Boom.badRequest('Unable to download file because ' + err.message);
@@ -86,7 +88,7 @@ const register = function (server, options) {
 
   server.route({
     method: 'DELETE',
-    path: '/api/S3/deleteFile/{fileName}',
+    path: '/api/S3/deleteFile/{fileName}/{fileType?}',
     options: {
       auth: {
         strategies: ['simple', 'session']        
@@ -95,10 +97,11 @@ const register = function (server, options) {
     handler: async function (request, h) {
       
       const fileName = request.params.fileName;
-      const bucketName = Config.get('/S3/bucketName'); 
+      const bucketName = Config.get('/S3/bucketName');
+      const fileType = request.params.fileType;  
       
       try {
-        await deleteFromS3(bucketName, fileName);        
+        await deleteFromS3(bucketName, fileName, fileType);        
       } 
       catch (err) {        
         throw Boom.badRequest('Unable to delete file because ' + err.message);
@@ -109,16 +112,18 @@ const register = function (server, options) {
   });   
 };
 
-async function deleteFromS3(bucketName, fileName) {
+async function deleteFromS3(bucketName, fileName, fileType=null) {
 
   const s3 = new AWS.S3({
     accessKeyId: Config.get('/S3/accessKeyId'),
     secretAccessKey: Config.get('/S3/secretAccessKey')
   });
 
+  const directory = fileType ? Config.get('/S3/fileTypesToDirectories')[fileType] : null;
+
   const params = {
     Bucket: bucketName,
-    Key: fileName    
+    Key: directory ? directory + '/' + fileName : fileName   
   };
 
   return new Promise((resolve, reject) => {    
@@ -134,16 +139,18 @@ async function deleteFromS3(bucketName, fileName) {
   }); 
 }
 
-async function uploadToS3(fileStream, fileName, bucketName) {
+async function uploadToS3(fileStream, fileName, bucketName, fileType=null) {
 
   const s3 = new AWS.S3({
     accessKeyId: Config.get('/S3/accessKeyId'),
     secretAccessKey: Config.get('/S3/secretAccessKey')
   });
   
+  const directory = fileType ? Config.get('/S3/fileTypesToDirectories')[fileType] : null;
+
   const params = {
     Bucket: bucketName,
-    Key: fileName, 
+    Key: directory ? directory + '/' + fileName : fileName, 
     Body: fileStream
   };
 
@@ -160,16 +167,18 @@ async function uploadToS3(fileStream, fileName, bucketName) {
   });  
 }
 
-async function getObjectFromS3(fileName, bucketName) {
+async function getObjectFromS3(fileName, bucketName, fileType=null) {
 
   const s3 = new AWS.S3({
     accessKeyId: Config.get('/S3/accessKeyId'),
     secretAccessKey: Config.get('/S3/secretAccessKey')
   });
+
+  const directory = fileType ? Config.get('/S3/fileTypesToDirectories')[fileType] : null;
   
   const params = {
     Bucket: bucketName,
-    Key: fileName,    
+    Key: directory ? directory + '/' + fileName : fileName,    
   };
 
   return new Promise((resolve, reject) => {    

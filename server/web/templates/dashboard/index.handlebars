@@ -5,6 +5,7 @@
       <div style="padding: 30px">
         <h3 class="font-weight-bold" style="font-size:1.8em;">Hello, {{user.name}}!</h3>        
         <br>
+        <input type="hidden" id="file-type">
         <input class='btn btn-sm btn-light d-none' title='' type='file' id='file-input' name='attachedFile' onchange='attachFiles(this);' multiple/>        
         <div class="dropdown show">
           <a class="btn btn-info btn-lg dropdown-toggle" href="#" role="button" id="upload-files-dropdown" data-toggle="dropdown">
@@ -68,7 +69,7 @@
               <tr>
                 <td>{{_id}}</td> 
                 <td>
-                  <a href="/api/S3/getObject/{{name}}" download='{{name}}'>{{name}}</a>
+                  <a href="/api/S3/getObject/{{name}}/{{type}}" download='{{name}}'>{{name}}</a>
                 </td>
                 <td>{{user.name}}</td>
                 <td>{{formatDate createdAt}}</td>                            
@@ -84,7 +85,7 @@
                     </div>
                   </div>
                 </td>
-                <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                           
+                <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}', '{{type}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                           
               </tr>
             {{/each}}
           </table>
@@ -116,7 +117,7 @@
                       <a class="nav-link bg-white" href="#fields-types" data-toggle="tab" role="tab" onclick="onclickFieldsTypesTab()">Fields Types</a>
                     </li>                    
                     <li class="nav-item">
-                      <a class="nav-link bg-white" href="#readme-selection" data-toggle="tab" role="tab">Readme Selections</a>
+                      <a class="nav-link bg-white" href="#readme-selection" data-toggle="tab" role="tab" onclick="onclickReadmeSelectionTab('{{user._id}}')">Readme Selections</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link bg-white" href="#variable-level" data-toggle="tab" role="tab" onclick="onclickVariableLevelsTab()">Variable Level</a>

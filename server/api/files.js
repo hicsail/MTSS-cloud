@@ -74,6 +74,36 @@ const register = function (server, options) {
   });
 
   server.route({
+    method: 'PUT',
+    path: '/api/files/readme-selection/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      },
+      validate: {
+        payload: File.readmeSelectionPayload
+      },      
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }      
+
+      const update = {
+        $set: {
+          readmeId: request.payload.readmeId        
+        }
+      };
+      file = await File.findByIdAndUpdate(id, update);
+      return ({ message: 'Success', doc: file });
+    }
+  });
+
+  server.route({
     method: 'GET',
     path: '/api/files/variables-hierarchy/{id}',
     options: {
@@ -91,6 +121,43 @@ const register = function (server, options) {
       }
 
       return ({ message: 'Success', 'hierarchy': file['variablesHierarchy'] });
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/files/readme/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }      
+      return ({ message: 'Success', 'readmeId': file.readmeId });
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/files/readmes/{userId}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {            
+
+      const userId = request.params.userId;
+
+      let files = await File.find({type: 'readme', userId: userId});      
+      return ({files});
     }
   });
 };

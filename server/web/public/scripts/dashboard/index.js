@@ -1,6 +1,7 @@
-function attachFiles(elem) {
+function attachFiles(elem, fileType=null, successAction=null) {
   
-  const files = $(elem).prop("files");  
+  const files = $(elem).prop("files");
+  const type = fileType ? fileType : $("#file-type").val();   
 
   $("#progressStatusCard").show();
   $("#progressStatus").empty();
@@ -16,7 +17,7 @@ function attachFiles(elem) {
     let formData = new FormData();       
     formData.append('file', file);
 
-    filesPayload.push({'name': file['name'], 'size': file['size']});    
+    filesPayload.push({'name': file['name'], 'size': file['size'], 'type': type});    
       
     $("#progressStatus").append("<br><p id='progressBarTitle" + i + "'>" + file['name'] + "</p>"); 
     $("#progressStatus").append("<div id='progressBar" + i + "' class='progressBar'></div>");
@@ -34,7 +35,7 @@ function attachFiles(elem) {
         return xhr;      
       },
       type: 'POST',
-      url: '/api/S3/saveFilesToBucket',    
+      url: '/api/S3/saveFilesToBucket/' + type,    
       data: formData, 
       contentType: false,
       cache: false,
@@ -64,8 +65,13 @@ function attachFiles(elem) {
         url: '/api/files/insertMany', 
         contentType: 'application/json',   
         data: JSON.stringify(filesPayload),                        
-        success: function (result) {         
-          location.reload();   
+        success: function (result) {
+          if (successAction) {            
+            successAction();
+          }
+          else {
+            location.reload();  
+          }             
         },
         error: function (result) {
           errorAlert(result.responseJSON.message);
@@ -89,7 +95,8 @@ function uploadFiles(type) {
   $("#file-input").prop('accept', '');
   if (type in typeToExtension) {    
     $("#" + $fileInputID).prop('accept', typeToExtension[type]);  
-  }  
+  }
+  $("#file-type").val(type);  
   $("#file-input").click();
 }
 
@@ -97,10 +104,11 @@ function deleteFile() {
 
   const fileName = $("#file-name").val();  
   const fileObjectId = $("#file-object-id").val();
+  const fileType = $("#file-type").val();
 
   $.ajax({      
     type: 'DELETE',
-    url: '/api/S3/deleteFile/' + fileName,                                 
+    url: '/api/S3/deleteFile/' + fileName + '/' + fileType,                                 
     success: function (result) { 
       //Also delete from DB     
       $.ajax({      
@@ -121,11 +129,12 @@ function deleteFile() {
   });
 }
 
-function onClickDeleteFile(fileName, fileObjectId) {
+function onClickDeleteFile(fileName, fileObjectId, type) {
 
   $("#modal-title").text('Delete file ' + fileName);
   $("#file-name").val(fileName);
   $("#file-object-id").val(fileObjectId);
+  $("#file-type").val(type);
 }
 
 //-------------------------------------------------------------------------------

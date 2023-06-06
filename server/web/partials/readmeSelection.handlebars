@@ -10,30 +10,22 @@
     <div class="row">
       <div class="col">
         <select class="selectpicker w-100 show-tick"
-                id="readme-select" 
+                id="readme-select"                
                 data-live-search="true" 
                 data-style="btn-white" 
                 data-size="5"                                                    
-                data-title="Select readme file"
-                
-        >  
-          <option value="readme1.md" data-subtext="Uploaded by arezoo sadeghi">readme1.md</option>
-          <option value="readme2.md" data-subtext="Uploaded by arezoo sadeghi">readme2.md</option> 
-          <option value="readme3.md" data-subtext="Uploaded by arezoo sadeghi">readme3.md</option> 
-          <option value="readme4.md" data-subtext="Uploaded by arezoo sadeghi">readme4.md</option> 
-          <option value="readme5.md" data-subtext="Uploaded by arezoo sadeghi">readme5.md</option> 
-          <option value="readme6.md" data-subtext="Uploaded by arezoo sadeghi">readme6.md</option>
-        </select>
+                data-title="Select readme file"                                                
+        ></select>
       </div>
       <div class="col text-right">
         <input class='btn btn-sm btn-light d-none' title='' type='file' id='readme-file-input' name='attachedFile' accept='.md' onchange='uploadFile(this);'/>
-        <button class='btn btn-white w-100' onclick='onclickUpload(this)'>Upload new readme file</button>
+        <button class='btn btn-white w-100' onclick='onclickUploadReadme(this)'>Upload new readme file</button>
       </div>
     </div>
     <br>
     <div class="row">
       <div class="col">
-        <button class="btn btn-info" onclick="savePreValidation('readmeSelection')">Save</button>
+        <button class="btn btn-info" onclick="onclickSaveReadmeSelection()">Save</button>
       </div>
     </div>
   </div>

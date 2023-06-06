@@ -5,9 +5,9 @@ function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
   $('#pre-validation-tabs a:first').click(); //to always open the first tab   
 }
 
-function savePreValidation(stepName) {
+function savePreValidation(stepName, successAction=null) {
   
-  const validStepNames = ['anonymization', 'dfShape', 'fieldsTypes', 'readmeSelection', 'variableLevel', 'uniqueIdentifier'];
+  const validStepNames = ['anonymization', 'dfShape', 'fieldsTypes', 'readmeSelection', 'variablesHierarchy', 'uniqueIdentifier'];
   if (!validStepNames.includes(stepName)) {    
     errorAlert('step name is not valid');
   }
@@ -28,12 +28,13 @@ function savePreValidation(stepName) {
             break;
           }
         }        
-        if (preValidationCompleted) {
-          //$("#prevalidation-dropdown-link" + fileId).prop( "disabled", false );
+        /*if (preValidationCompleted) {          
           successAlert("You have completed all pre-validation steps and now you can proceed with validating your dataset.")
-          //location.reload();
+        }*/
+        if (successAction) {
+          successAction();
         }
-        saveVariableHierarchy(fileId);   
+        //saveVariableHierarchy(fileId);   
       },
       error: function (result) {
         errorAlert(result.responseJSON.message);

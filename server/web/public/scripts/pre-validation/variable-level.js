@@ -366,10 +366,16 @@ function saveVariableHierarchy(fileId) {
       contentType: 'application/json',   
       data: JSON.stringify({variablesHierarchy: data}),                        
       success: function (result) {          
-      	
+      	successAlert("Successfuly saved variables hierarchy!");	
       },
       error: function (result) {
         errorAlert(result.responseJSON.message);
       }
     });  
+}
+
+function onCickSaveHierarchy() {
+
+	const fileId = $("#file-id").val();		
+	savePreValidation('variablesHierarchy', () => { saveVariableHierarchy(fileId) });
 }
