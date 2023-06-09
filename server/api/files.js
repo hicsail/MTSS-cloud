@@ -104,6 +104,57 @@ const register = function (server, options) {
   });
 
   server.route({
+    method: 'PUT',
+    path: '/api/files/fields-types/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      },
+      validate: {
+        payload: File.fieldsTypesPayload
+      },      
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }      
+
+      const update = {
+        $set: {
+          fieldsTypes: request.payload        
+        }
+      };
+      file = await File.findByIdAndUpdate(id, update);
+      return ({ message: 'Success', doc: file });
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/files/fields-types/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      return ({ message: 'Success', 'fieldsTypes': file['fieldsTypes'] });
+    }
+  });
+
+  server.route({
     method: 'GET',
     path: '/api/files/variables-hierarchy/{id}',
     options: {

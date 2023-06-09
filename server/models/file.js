@@ -23,6 +23,7 @@ class File extends AnchorModel {
       createdAt: new Date(),
       variablesHierarchy: null,
       readmeId: null,
+      fieldsTypes: null, 
       preValidationSteps: this.initializePreValidationStepsObj()        
     };          
 
@@ -41,6 +42,7 @@ class File extends AnchorModel {
       doc.createdAt = new Date(); 
       doc.preValidationSteps = this.initializePreValidationStepsObj();
       doc.variablesHierarchy = null; 
+      doc.fieldsTypes = null;
       doc.readmeId = null;   
     }    
     
@@ -93,8 +95,15 @@ File.variablesHierarchyPayload = Joi.object({
 });
 
 File.readmeSelectionPayload = Joi.object({
-  readmeId: Joi.string().required()
+  eadmeId: Joi.string().required()
 });
+
+File.fieldsTypesPayload = Joi.array().items(
+  Joi.object({
+    fieldType: Joi.string().required(),
+    cols: Joi.array().required(),
+  })
+);
 
 File.routes = Hoek.applyToDefaults(AnchorModel.routes, {  
   create: {

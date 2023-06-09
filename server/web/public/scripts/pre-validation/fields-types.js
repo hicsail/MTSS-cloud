@@ -28,33 +28,18 @@ function onchangeFieldsTypesColsSelect(elem, fieldType) {
   $("#" +  colsNumCellID).text(selectedCols.length);  
 }
 
-function onclickFieldsTypesTab() {
+async function getFieldsTypes(fileId) {
+
+  const url = '/api/files/fields-types/' + fileId;
+  const response = await fetch(url);
+  const result = await response.json();
+  return result['fieldsTypes'];
+}
+
+async function onclickFieldsTypesTab() {
   
   const fileId = $("#file-id").val(); 
-  //hard coded for now 
-  const fieldsTypes = [
-          {
-            'fieldType': 'ID',
-            'num-cols': 3,
-            'cols': ['col1', 'col2', 'col3'],
-          },
-          {
-            'fieldType': 'Demographic',
-            'num-cols': 2,
-            'cols': ['col5', 'col6'],
-          },
-          {
-            'fieldType': 'Wave-school-level',
-            'num-cols': 1,
-            'cols': ['col1'],
-          },
-          {
-            'fieldType': 'Outcome',
-            'num-cols': 2,
-            'cols': ['col2', 'col3'],
-          }
-        ];
-
+  const fieldsTypes = await getFieldsTypes(fileId);
   let tableRowsHTML = '';
   
   //hard coded for now 
@@ -110,4 +95,48 @@ function onchangeFieldTypeCB(elem, event) {
       }       
     });    
   }
+}
+
+function getFieldsTypesFromTable(tableId) {
+
+  let fieldsTypes = [];
+  let rows = $("#" + tableId + " tbody").find('tr');  
+  rows.each(function() {       
+    let cols = $(this).find('td'); 
+    let fieldType = {};    
+    cols.each(function(idx) { 
+      if (idx === 0) {        
+        fieldType['fieldType'] = $(this).text();  
+      }
+      else if (idx === 2) {               
+        fieldType['cols'] = $(this).find('select').val(); 
+      }
+    });        
+    fieldsTypes.push(fieldType);
+  });  
+  return fieldsTypes; 
+}
+
+function saveFieldsTypes(fileId, fieldsTypes) {  
+    
+    $.ajax({      
+      type: 'PUT',
+      url: '/api/files/fields-types/' + fileId, 
+      contentType: 'application/json',   
+      data: JSON.stringify(fieldsTypes),                        
+      success: function (result) {               
+        successAlert("Successfuly saved fields types for the file!");  
+      },
+      error: function (result) {
+        errorAlert(result.responseJSON.message);
+      }
+    });  
+}
+
+function onclickSaveFieldsTypes() {
+
+  const fileId = $("#file-id").val(); 
+  const tableId = "fields-type-table";
+  let fieldsTypes = getFieldsTypesFromTable(tableId);  
+  savePreValidation('fieldsTypes', () => { saveFieldsTypes(fileId, fieldsTypes) });
 }
