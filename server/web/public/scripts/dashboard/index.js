@@ -2,7 +2,7 @@ function attachFiles(elem, fileType=null, successAction=null) {
   
   const files = $(elem).prop("files");
   const type = fileType ? fileType : $("#file-type").val();   
-
+  
   $("#progressStatusCard").show();
   $("#progressStatus").empty();
 
@@ -66,8 +66,8 @@ function attachFiles(elem, fileType=null, successAction=null) {
         contentType: 'application/json',   
         data: JSON.stringify(filesPayload),                        
         success: function (result) {
-          if (successAction) {            
-            successAction();
+          if (successAction) {                      
+            successAction(result._id.toString());
           }
           else {
             location.reload();  
@@ -100,23 +100,26 @@ function uploadFiles(type) {
   $("#file-input").click();
 }
 
-function deleteFile() {
+function deleteFile($fileId, successAction=null) {  
 
-  const fileName = $("#file-name").val();  
-  const fileObjectId = $("#file-object-id").val();
-  const fileType = $("#file-type").val();
+  const fileId = $("#" + $fileId).val(); 
 
   $.ajax({      
     type: 'DELETE',
-    url: '/api/S3/deleteFile/' + fileName + '/' + fileType,                                 
+    url: '/api/S3/deleteFile/' + fileId,                                 
     success: function (result) { 
       //Also delete from DB     
       $.ajax({      
         type: 'DELETE',
-        url: '/api/files/' + fileObjectId,                                 
-        success: function (result) {                     
-          successAlert("Successfully deleted file.");
-          location.reload();           
+        url: '/api/files/' + fileId,                                 
+        success: function (result) {
+          if (successAction) {                        
+            successAction();
+          }
+          else {            
+            successAlert("Successfully deleted file.");
+            location.reload(); 
+          }                    
         },
         error: function (result) {
           errorAlert(result.responseJSON.message);

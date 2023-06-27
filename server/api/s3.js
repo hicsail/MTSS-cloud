@@ -3,6 +3,10 @@ const Boom = require('boom');
 const File = require('../models/file');
 const AWS = require('aws-sdk');
 const Config = require('../../config');
+const FS = require('fs');
+const Path = require('path');
+
+const FILES_DIR_PATH = Config.get('/datasetDirectoryPath');
 
 const register = function (server, options) {
 
@@ -43,14 +47,16 @@ const register = function (server, options) {
       }  
 
       const fileStream = request.payload.file;
+      const fileStream2 = request.payload.file;
       const fileName = fileStream['hapi']['filename'];
       const bucketName = Config.get('/S3/bucketName'); 
-      const fileType = request.params.fileType;
+      const fileType = request.params.fileType;     
       
       try {
-        await uploadToS3(fileStream, fileName, bucketName, fileType);        
+        await uploadToS3(fileStream, fileName, bucketName, fileType);
+        await saveFile(fileStream, fileName, FILES_DIR_PATH);        
       } 
-      catch (err) {        
+      catch (err) {             
         //throw Boom.badRequest('Unable to upload file because ' + err.message);
         return {'success': false, 'fileName': ''};
       }
@@ -88,7 +94,7 @@ const register = function (server, options) {
 
   server.route({
     method: 'DELETE',
-    path: '/api/S3/deleteFile/{fileName}/{fileType?}',
+    path: '/api/S3/deleteFile/{fileId}',
     options: {
       auth: {
         strategies: ['simple', 'session']        
@@ -96,12 +102,17 @@ const register = function (server, options) {
     },      
     handler: async function (request, h) {
       
-      const fileName = request.params.fileName;
+      const fileId = request.params.fileId;
       const bucketName = Config.get('/S3/bucketName');
-      const fileType = request.params.fileType;  
+
+      const file = await File.findById(fileId);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
       
       try {
-        await deleteFromS3(bucketName, fileName, fileType);        
+        await deleteFromS3(bucketName, file.name, file.type);
+        deleteFileFromFileSystem(file.name, FILES_DIR_PATH);        
       } 
       catch (err) {        
         throw Boom.badRequest('Unable to delete file because ' + err.message);
@@ -191,6 +202,38 @@ async function getObjectFromS3(fileName, bucketName, fileType=null) {
       }   
     });  
   });  
+}
+
+async function saveFile(readStream, fileName, path) {
+    
+  path = Path.join(path, fileName);  
+  
+  return new Promise((resolve, reject) => {
+    try {
+      const writeStream = FS.createWriteStream(path);
+      readStream.pipe(writeStream);    
+
+      writeStream.on('error', (err) => {        
+        throw new Error(err.message);
+        console.log(err);    
+      });
+
+      writeStream.on('finish', () => {        
+        resolve(fileName);        
+      });      
+    } catch (e) {          
+      reject(e);
+    }
+  });    
+}
+
+function deleteFileFromFileSystem(fileName, path) {
+
+  path = Path.join(path, fileName); 
+    
+  if (FS.existsSync(path)) {
+    FS.unlinkSync(path);
+  }  
 }
 
 module.exports = {

@@ -39,7 +39,9 @@ async function getFieldsTypes(fileId) {
 async function onclickFieldsTypesTab() {
   
   const fileId = $("#file-id").val(); 
-  const fieldsTypes = await getFieldsTypes(fileId);
+  let fieldsTypes = await getFieldsTypes(fileId);
+  fieldsTypes = fieldsTypes ? fieldsTypes : [];
+  
   let tableRowsHTML = '';
   
   //hard coded for now 

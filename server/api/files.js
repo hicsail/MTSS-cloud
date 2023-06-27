@@ -3,7 +3,7 @@ const Boom = require('boom');
 const Joi = require('joi');
 const File = require('../models/file');
 
-const register = function (server, options) {
+const register = function (server, options) { 
 
   server.route({
     method: 'PUT',

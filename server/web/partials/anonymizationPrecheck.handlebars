@@ -72,8 +72,8 @@
           </label>
         </div>
         <div class="collapse col" id="upload-revised-df">
-          <input class='btn btn-sm btn-light d-none' title='' type='file' id='file-input' name='attachedFile' accept='.csv''/>
-          <button class='btn btn-light btn-sm' onclick='onclickUpload(this)'>
+          <input class='btn btn-sm btn-light d-none' title='' type='file' id='edited-file-input' name='attachedFile' accept='.csv' onchange='onchangeEditedFileInput(this);'/>
+          <button class='btn btn-light btn-sm' onclick='onclickUploadEditedDF(this)'>
             Upload Edited DF
           </button> 
         </div>

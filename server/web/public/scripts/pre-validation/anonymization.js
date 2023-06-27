@@ -24,3 +24,19 @@ function onchangeIdentifyingColCB(elem) {
   }
   
 }
+
+function onclickUploadEditedDF(elem) {
+
+  $("#edited-file-input").click();
+}
+
+function onchangeEditedFileInput(elem) {
+
+  const $fileId = 'file-id'; 
+
+  function postUploadSuccessAction() {
+
+    successAlert("File uploaded sucessfully!");    
+  }  
+  deleteFile($fileId, () => { attachFiles(elem, 'csv')});    
+}
