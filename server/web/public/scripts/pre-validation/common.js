@@ -7,7 +7,7 @@ function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
 
 function savePreValidation(stepName, successAction=null) {
   
-  const validStepNames = ['anonymization', 'dfShape', 'fieldsTypes', 'readmeSelection', 'variablesHierarchy', 'uniqueIdentifier'];
+  const validStepNames = ['anonymization', 'dfType', 'fieldsTypes', 'readmeSelection', 'variablesHierarchy', 'uniqueIdentifier'];
   if (!validStepNames.includes(stepName)) {    
     errorAlert('step name is not valid');
   }

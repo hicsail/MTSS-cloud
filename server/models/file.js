@@ -25,6 +25,7 @@ class File extends AnchorModel {
       readmeId: null,
       fieldsTypes: null, 
       uniqueIdentifier: null, 
+      dfType: null, 
       preValidationSteps: this.initializePreValidationStepsObj()        
     };          
 
@@ -46,6 +47,7 @@ class File extends AnchorModel {
       doc.fieldsTypes = null;
       doc.readmeId = null;  
       doc.uniqueIdentifier = null; 
+      doc.dfType = null;
     }    
     
     /*let document = {
@@ -63,7 +65,7 @@ class File extends AnchorModel {
     return {
       anonymization: false,
       uniqueIdentifier: false,
-      dfShape: false,
+      dfType: false,
       fieldsTypes: false,
       readmeSelection: false,
       variableLevel: false
@@ -85,7 +87,7 @@ File.schema = Joi.object({
 
 File.preValidationStepsPayload = Joi.object({
   anonymization: Joi.boolean().optional(),
-  dfShape: Joi.boolean().optional(),
+  dfType: Joi.boolean().optional(),
   fieldsTypes: Joi.boolean().optional(),
   readmeSelection: Joi.boolean().optional(),
   variablesHierarchy: Joi.boolean().optional(),
@@ -109,6 +111,10 @@ File.fieldsTypesPayload = Joi.array().items(
 
 File.uniqueIdentifierPayload = Joi.object({
   uniqueIdentifier: Joi.string().required()
+});
+
+File.dfTypePayload = Joi.object({
+  dfType: Joi.string().required().valid('screening', 'intervention')
 });
 
 File.routes = Hoek.applyToDefaults(AnchorModel.routes, {  
