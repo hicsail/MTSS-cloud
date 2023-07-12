@@ -32,14 +32,15 @@ async function getFieldsTypes(fileId) {
 
   const url = '/api/files/fields-types/' + fileId;
   const response = await fetch(url);
-  const result = await response.json();
+  const result = await response.json();  
   return result['fieldsTypes'];
 }
 
 async function onclickFieldsTypesTab() {
   
+  await initializeFieldTypesMenu();
   const fileId = $("#file-id").val(); 
-  let fieldsTypes = await getFieldsTypes(fileId);
+  let fieldsTypes = await getFieldsTypes(fileId);  
   fieldsTypes = fieldsTypes ? fieldsTypes : [];
   
   let tableRowsHTML = '';
@@ -47,11 +48,11 @@ async function onclickFieldsTypesTab() {
   //hard coded for now 
   const dataCols = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8'];
 
-  for (const elem of fieldsTypes) {   
+  for (const elem of fieldsTypes) {       
     const colsSelectHTML = getFieldsTypesColsSelectHTML(dataCols, elem['fieldType'], elem['cols']);
     tableRowsHTML += '<tr>' +                              
                     '<td>' + elem['fieldType'] + '</td>' +
-                    '<td id="' + getFieldTypeColsNumCellId(elem['fieldType']) + '">' + elem['num-cols'] + '</td>' +              
+                    '<td id="' + getFieldTypeColsNumCellId(elem['fieldType']) + '">' + elem['cols'].length + '</td>' +              
                     '<td>' + colsSelectHTML + '</td>' +
                   '</tr>'    
   }
@@ -83,12 +84,47 @@ function onkeydownFieldType(event, elem) {
   }
 }
 
+async function initializeFieldTypesMenu() {
+
+  let defaultFieldsTypesOptions = ['Demographic', ' Wave-school-level', 'Outcome', 'ID'];
+  const domId = 'fields-type-dropdown-menu';
+  const fileId = $("#file-id").val(); 
+
+  let fieldsTypes = await getFieldsTypes(fileId);
+  fieldsTypes = fieldsTypes ? fieldsTypes : [];
+  fieldsTypes = fieldsTypes.map((elem) => { return {'type': elem['fieldType'], 'checked': true}});
+  console.log("deli", fieldsTypes)
+  for (const type of defaultFieldsTypesOptions) {
+    if (!fieldsTypes.find(elem => elem['type'] === type)) {
+      fieldsTypes.push({'type': type, 'checked': false});  
+    }
+  }
+
+  let html = '<form class="px-4 py-3">';
+  for (const elem of fieldsTypes) {
+    const checked = elem['checked'] ? 'checked' : '';
+    html += '<div class="form-check ml-4">' +
+              '<input type="checkbox" class="form-check-input" id="' + elem['type'] + '" value="' + elem['type'] + '" onchange="onchangeFieldTypeCB(this, event)" ' + checked + '>' + 
+              '<label class="form-check-label" for="' + elem['type'] + '">' + elem['type'] + '</label>' + 
+            '</div>';
+  }
+  html += '</form>';
+
+  $("#" + domId).append(html);
+}
+
 function onchangeFieldTypeCB(elem, event) {
 
   event.preventDefault();
   const type = $(elem).val();
-  if ($(elem).is(":checked")) {
-    $("#fields-type-table tbody").append("<tr><td>" + type + "</td><td>unknown</td></tr>");
+  if ($(elem).is(":checked")) {    
+    const dataCols = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8'];
+    const colsSelectHTML = getFieldsTypesColsSelectHTML(dataCols, type);
+    $("#fields-type-table tbody").append("<tr><td>" + type + "</td>" + 
+                                          "<td id='" + getFieldTypeColsNumCellId(type) + "'>0</td>" + 
+                                          "<td>" + colsSelectHTML + "</td>" +
+                                          "</tr>");
+    $('.fields-types-cols-select').selectpicker();
   }
   else {    
     $("#fields-type-table tbody tr").each(function( index ) { 
