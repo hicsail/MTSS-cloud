@@ -29,6 +29,7 @@
           </div>
         <div class="col-md-2"></div>
       </div>
+
       <!-- File Delete modal -->
       <div class="modal" id="delete-file-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -50,115 +51,142 @@
               </div>
           </div>
         </div>
-      </div>      
-      <div class="card mt-2">
-        <div style="padding: 20px;">
-          <table id="files-list-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-              <tr>
-                <th class="hidden">ID</th>
-                <th>Name</th>
-                <th>Uploaded By</th>
-                <th>Date</th>            
-                <th>Size</th>
-                <th>Validation</th>                
-                <th>Delete</th>                                            
-              </tr>
-            </thead>
-            {{#each files as |file|}}
-              <tr>
-                <td>{{_id}}</td> 
-                <td>
-                  <a href="/api/S3/getObject/{{name}}/{{type}}" download='{{name}}'>{{name}}</a>
-                </td>
-                <td>{{user.name}}</td>
-                <td>{{formatDate createdAt}}</td>                            
-                <td><span class="badge badge-info">{{size}}</span></td>
-                <td>
-                  <div class="dropdown" id="validation-dropdown-{{_id}}">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="validation-dropdown-btn-{{_id}}" data-toggle="dropdown">
-                      Validation
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="validation-dropdown-btn-{{_id}}">
-                      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pre-validation-modal" onclick="onclickPreValidation('{{_id}}', '{{name}}', {{file.preValidationNotCompleted}})">Pre-validation</a>
-                      <a class="dropdown-item {{#if file.preValidationNotCompleted}}disabled{{/if}}" href="#" id="prevalidation-dropdown-link-{{_id}}">validation</a>    
-                    </div>
-                  </div>
-                </td>
-                <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}', '{{type}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                           
-              </tr>
-            {{/each}}
-          </table>
+      </div> 
 
-          <!-- Pre-validation modal -->          
-          <div class="modal fade" tabindex="-1" role="dialog" id="pre-validation-modal">
-            <div class="modal-dialog" role="document" style="min-width:50%;">
-              <div class="modal-content" style="max-height:900px; overflow-y:auto;">
-                <div class="modal-header">
-                  <h5 class="modal-title font-weight-bold">Pre-validation steps for file <span id="prevalidation-file-name"></span></h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+      <!-- Pre-validation modal -->          
+      <div class="modal fade" tabindex="-1" role="dialog" id="pre-validation-modal">
+        <div class="modal-dialog" role="document" style="min-width:50%;">
+          <div class="modal-content" style="max-height:900px; overflow-y:auto;">
+            <div class="modal-header">
+              <h5 class="modal-title font-weight-bold">Pre-validation steps for file <span id="prevalidation-file-name"></span></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">                
+              <input type="hidden" id="file-id">
+              <ul class="nav nav-tabs" id="pre-validation-tabs">                  
+                <li class="nav-item">
+                  <a class="nav-link bg-white active" href="#anonymization" data-toggle="tab" role="tab" onclick="onclickAnonymizationTab()">Research Anonymization</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link bg-white" href="#df-shape" data-toggle="tab" role="tab" onclick="onclickDFShapeTab()">DF Shape</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link bg-white" href="#fields-types" data-toggle="tab" role="tab" onclick="onclickFieldsTypesTab()">Fields Types</a>
+                </li>                    
+                <li class="nav-item">
+                  <a class="nav-link bg-white" href="#readme-selection" data-toggle="tab" role="tab" onclick="onclickReadmeSelectionTab('{{user._id}}')">Readme Selections</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link bg-white" href="#variable-level" data-toggle="tab" role="tab" onclick="onclickVariableLevelsTab()">Variable Level</a>
+                </li>                                   
+              </ul>
+              <div class="tab-content" id="pre-validation-tab-content">
+                <div class="tab-pane fade show in active" id="anonymization" role="tabpanel">
+                  {{> anonymizationPrecheck}}
                 </div>
-                <div class="modal-body">
-                  <!--{{> anonymizationPrecheck}}                  
+                <div class="tab-pane fade" id="df-shape" role="tabpanel">
                   {{> DFShapePrecheck}}
-                  {{> fieldsTypesPrecheck}} 
-                  {{> readmeSelection}} -->
-                  <input type="hidden" id="file-id">
-                  <ul class="nav nav-tabs" id="pre-validation-tabs">                  
-                    <li class="nav-item">
-                      <a class="nav-link bg-white active" href="#anonymization" data-toggle="tab" role="tab" onclick="onclickAnonymizationTab()">Research Anonymization</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link bg-white" href="#df-shape" data-toggle="tab" role="tab" onclick="onclickDFShapeTab()">DF Shape</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link bg-white" href="#fields-types" data-toggle="tab" role="tab" onclick="onclickFieldsTypesTab()">Fields Types</a>
-                    </li>                    
-                    <li class="nav-item">
-                      <a class="nav-link bg-white" href="#readme-selection" data-toggle="tab" role="tab" onclick="onclickReadmeSelectionTab('{{user._id}}')">Readme Selections</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link bg-white" href="#variable-level" data-toggle="tab" role="tab" onclick="onclickVariableLevelsTab()">Variable Level</a>
-                    </li>
-                    <!--<li class="nav-item">
-                      <a class="nav-link bg-white" href="#naming-convention" data-toggle="tab" role="tab">Naming Convention</a>
-                    </li> -->                
-                  </ul>
-                  <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show in active" id="anonymization" role="tabpanel">
-                      {{> anonymizationPrecheck}}
-                    </div>
-                    <div class="tab-pane fade" id="df-shape" role="tabpanel">
-                      {{> DFShapePrecheck}}
-                    </div>
-                    <div class="tab-pane fade" id="fields-types" role="tabpanel">
-                      {{> fieldsTypesPrecheck}}
-                    </div>
-                    <div class="tab-pane fade" id="readme-selection" role="tabpanel">
-                      {{> readmeSelection}}
-                    </div>
-                    <div class="tab-pane fade" id="variable-level" role="tabpanel">
-                      {{> variableLevel}}
-                    </div>
-                    <!--<div class="tab-pane fade" id="naming-convention" role="tabpanel">
-                      <p class="ml-4">Naming convention validation</p> 
-                    </div>-->                    
-                  </div> 
                 </div>
-                <div class="modal-footer">                  
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="tab-pane fade" id="fields-types" role="tabpanel">
+                  {{> fieldsTypesPrecheck}}
                 </div>
-              </div>
+                <div class="tab-pane fade" id="readme-selection" role="tabpanel">
+                  {{> readmeSelection}}
+                </div>
+                <div class="tab-pane fade" id="variable-level" role="tabpanel">
+                  {{> variableLevel}}
+                </div>                                        
+              </div> 
+            </div>
+            <div class="modal-footer">                  
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
+        </div>
+      </div>
 
+      <ul class="nav nav-tabs" id="files-tabs">                  
+        <li class="nav-item">
+          <a class="nav-link bg-white active" href="#csvs" data-toggle="tab" role="tab">CSV</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link bg-white" href="#readmes" data-toggle="tab" role="tab">README</a>
+        </li>                                       
+      </ul>
+      <div class="card mt-2">        
+        <div class="tab-content" id="files-tabs-content">
+          <div style="padding: 20px;" class="tab-pane fade show in active" id="csvs" role="tabpanel">
+            <table id="files-list-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th class="hidden">ID</th>
+                  <th>Name</th>
+                  <th>Uploaded By</th>
+                  <th>Date</th>            
+                  <th>Size</th>
+                  <th>Validation</th>                
+                  <th>Delete</th>                                            
+                </tr>
+              </thead>
+              {{#each csvs as |file|}}
+                <tr>
+                  <td>{{_id}}</td> 
+                  <td>
+                    <a href="/api/S3/getObject/{{name}}/{{type}}" download='{{name}}'>{{name}}</a>
+                  </td>
+                  <td>{{user.name}}</td>
+                  <td>{{formatDate createdAt}}</td>                            
+                  <td><span class="badge badge-info">{{size}}</span></td>
+                  <td>
+                    <div class="dropdown" id="validation-dropdown-{{_id}}">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="validation-dropdown-btn-{{_id}}" data-toggle="dropdown">
+                        Validation
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="validation-dropdown-btn-{{_id}}">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pre-validation-modal" onclick="onclickPreValidation('{{_id}}', '{{name}}', {{file.preValidationNotCompleted}})">Pre-validation</a>
+                        <a class="dropdown-item {{#if file.preValidationNotCompleted}}disabled{{/if}}" href="#" id="prevalidation-dropdown-link-{{_id}}">validation</a>    
+                      </div>
+                    </div>
+                  </td>
+                  <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}', '{{type}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                           
+                </tr>
+              {{/each}}
+            </table>
+          </div>
+          <div style="padding: 20px;" class="tab-pane fade" id="readmes" role="tabpanel">
+            <table id="files-list-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th class="hidden">ID</th>
+                  <th>Name</th>
+                  <th>Uploaded By</th>
+                  <th>Date</th>            
+                  <th>Size</th>                                  
+                  <th>Delete</th>                                            
+                </tr>
+              </thead>
+              {{#each readmes as |file|}}
+                <tr>
+                  <td>{{_id}}</td> 
+                  <td>
+                    <a href="/api/S3/getObject/{{name}}/{{type}}" download='{{name}}'>{{name}}</a>
+                  </td>
+                  <td>{{user.name}}</td>
+                  <td>{{formatDate createdAt}}</td>                            
+                  <td><span class="badge badge-info">{{size}}</span></td>                  
+                  <td><button class="btn btn-danger" onClick="onClickDeleteFile('{{name}}', '{{_id}}', '{{type}}')" data-toggle="modal" data-target="#delete-file-modal" {{#ifNotEquals file.userId ../user._id}}disabled{{/ifNotEquals}}>Delete</button></td>                           
+                </tr>
+              {{/each}}
+            </table>
+          </div>  
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <script type="text/javascript" src="/public/scripts/pre-validation/fields-types.js"></script>
 <script type="text/javascript" src="/public/scripts/pre-validation/readme-selection.js"></script>
 <script type="text/javascript" src="/public/scripts/pre-validation/anonymization.js"></script>

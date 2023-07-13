@@ -153,7 +153,7 @@ $(document).ready(function () {
     scrollY: '500px',
     scrollCollapse: true,
     lengthChange: false,          
-    stateSave: true,
+    stateSave: true,    
     dom: 'Bfrtip',
     columnDefs: [
       {
@@ -206,7 +206,7 @@ $(document).ready(function () {
       'colvis'
     ]          
   }); 
-  table.columns( '.hidden' ).visible( false );
+  table.columns( '.hidden' ).visible( false );  
 
   jQuery.fn.dataTableExt.oSort["size-desc"] = function (x, y) {
     
@@ -274,5 +274,5 @@ $(document).ready(function () {
     else {
       return (xSizeLetterIndex < ySizeLetterIndex) ? -1 : ((xSizeLetterIndex > ySizeLetterIndex) ? 1 : 0);       
     }      
-  }     
+  }       
 });

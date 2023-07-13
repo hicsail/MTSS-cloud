@@ -42,3 +42,28 @@ function savePreValidation(stepName, successAction=null) {
     });  
   }
 }
+
+$('#pre-validation-tabs a').click(function(){
+  $(this).tab('show')
+  var name = $(this).attr('href').substr(1)
+  $('#pre-validation-tab-content').children().each(function(el) {    
+    if (name === $(this).attr('id')) {
+      $(this).addClass('active')
+    } else {
+      $(this).removeClass('active')
+    }
+  })  
+})
+
+$('#files-tabs a').click(function(){
+  $(this).tab('show')
+  var name = $(this).attr('href').substr(1)
+  $('#files-tabs-content').children().each(function(el) {    
+    if (name === $(this).attr('id')) {
+      $(this).addClass('active')
+    } else {
+      $(this).removeClass('active')
+    }
+  }) 
+})
+

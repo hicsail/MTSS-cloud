@@ -15,8 +15,8 @@ const register = function (server, options) {
     handler: async function (request, h) {
 
       const user = request.auth.credentials.user;
-      let files = await File.lookup({}, File.lookups);
-      files = files.map((file) => {
+      let csvs = await File.lookup({type:'csv', userId: user._id.toString()}, File.lookups);
+      csvs = csvs.map((file) => {
               file['size'] = formatFileSize(file['size']);
               for (const key in file.preValidationSteps) {                
                 if (!file.preValidationSteps[key]) {
@@ -26,13 +26,20 @@ const register = function (server, options) {
               }             
               return file;
             }); 
+
+      let readmes = await File.lookup({type:'readme', userId: user._id.toString()}, File.lookups);
+      readmes = readmes.map((file) => {
+              file['size'] = formatFileSize(file['size']);                        
+              return file;
+            }); 
                  
       return h.view('dashboard/index', {
         user,
         projectName: Config.get('/projectName'),
         title: 'Dashboard',
         baseUrl: Config.get('/baseUrl'),
-        files        
+        csvs,
+        readmes        
       });
     }
   });
