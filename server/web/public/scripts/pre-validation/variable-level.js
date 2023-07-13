@@ -17,14 +17,14 @@ async function onclickVariableLevelsTab() {
 	clearSVG();	
 	renderTreeLayout(data);
 	renderPackedCircles(data);
-	
-	const addVars = ['var1', 'var2', 'var3', 'var4', 'var5', 'var6', 'var9', 'var10'];
+
+	const addVars = await getColumns(fileId);
 	const removeVars = [];
 	const parentVars = [];
 	getVarsFromHierarchy(data, addVars, removeVars, parentVars);
-	attachOptionsToSelectElem("variables-select", addVars);
-	attachOptionsToSelectElem("remove-variable-select", removeVars, "remove-variable-col-wrapper");
-	attachOptionsToSelectElem("variables-parent-select", parentVars, "variables-parent-col-wrapper");	
+	attachOptionsToSelectElemWrapper("variables-select", addVars);
+	attachOptionsToSelectElemWrapper("remove-variable-select", removeVars, "remove-variable-col-wrapper");
+	attachOptionsToSelectElemWrapper("variables-parent-select", parentVars, "variables-parent-col-wrapper");	
 }
 
 function getVarsFromHierarchy(hierarchy, addVars, removeVars, parentVars) {
@@ -46,7 +46,7 @@ function getVarsFromHierarchy(hierarchy, addVars, removeVars, parentVars) {
 	}	
 }
 
-function attachOptionsToSelectElem(selectId, options, wrapperColId=null) {
+function attachOptionsToSelectElemWrapper(selectId, options, wrapperColId=null) {
 
 	$("#" + selectId).empty();
 	for (const option of options) {
@@ -86,11 +86,6 @@ function makeElemVisible(domId) {
 function makeElemInvisible(domId) {
 
 	$("#" + domId).addClass('d-none').show();	
-}
-
-function onchangeVariableLevelCB(elem) {
-
-  console.log("place holder");
 }
 
 function onkeydownVariableLevel(even, elem) {
@@ -248,14 +243,15 @@ function resetViz() {
 
 	data = null; 
 	clearSVG();
-	const addVars = ['var1', 'var2', 'var3', 'var4', 'var5', 'var6', 'var9', 'var10'];
+	const fileId = $("#file-id").val();		
+	const addVars = getColumns(fileId);
 	const removeVars = [];
 	const parentVars = [];
-	attachOptionsToSelectElem("variables-select", addVars);
+	attachOptionsToSelectElemWrapper("variables-select", addVars);
 	makeElemInvisible("variables-parent-col-wrapper");
 	makeElemInvisible("remove-variable-col-wrapper");
-	attachOptionsToSelectElem("remove-variable-select", removeVars, "remove-variable-col-wrapper");
-	attachOptionsToSelectElem("variables-parent-select", parentVars, "variables-parent-col-wrapper");
+	attachOptionsToSelectElemWrapper("remove-variable-select", removeVars, "remove-variable-col-wrapper");
+	attachOptionsToSelectElemWrapper("variables-parent-select", parentVars, "variables-parent-col-wrapper");
 }
 
 function clearSVG() {

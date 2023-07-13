@@ -43,11 +43,9 @@ async function onclickFieldsTypesTab() {
   let fieldsTypes = await getFieldsTypes(fileId);  
   fieldsTypes = fieldsTypes ? fieldsTypes : [];
   
-  let tableRowsHTML = '';
+  let tableRowsHTML = ''; 
   
-  //hard coded for now 
-  const dataCols = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8'];
-
+  const dataCols = await getColumns(fileId);
   for (const elem of fieldsTypes) {       
     const colsSelectHTML = getFieldsTypesColsSelectHTML(dataCols, elem['fieldType'], elem['cols']);
     tableRowsHTML += '<tr>' +                              
@@ -60,20 +58,21 @@ async function onclickFieldsTypesTab() {
   $('.fields-types-cols-select').selectpicker();
 }
 
-function onkeydownFieldType(event, elem) {
+async function onkeydownFieldType(event, elem) {
   
   if(event.keyCode == 13) {
     event.preventDefault();
     event.stopImmediatePropagation();
     const type = $(elem).val();
+    const fileId = $("#file-id").val();
     $("#fields-type-dropdown-menu form").prepend('<div class="form-check ml-4">' +
                                               '<input type="checkbox" class="form-check-input" id="' + type + '" checked onchange="onchangeFieldTypeCB(this, event)" value="' + type + '">' +
                                               '<label class="form-check-label" for="' + type + '">' +
                                               type + 
                                               '</label>' + 
                                               '</div>');
-    //hard coded for now 
-    const dataCols = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8'];
+
+    const dataCols = await getColumns(fileId);
     const colsSelectHTML = getFieldsTypesColsSelectHTML(dataCols, type);
     $("#fields-type-table tbody").append("<tr><td>" + type + "</td>" + 
                                           "<td id='" + getFieldTypeColsNumCellId(type) + "'>0</td>" + 
@@ -86,14 +85,13 @@ function onkeydownFieldType(event, elem) {
 
 async function initializeFieldTypesMenu() {
 
-  let defaultFieldsTypesOptions = ['Demographic', ' Wave-school-level', 'Outcome', 'ID'];
-  const domId = 'fields-type-dropdown-menu';
+  let defaultFieldsTypesOptions = ['Demographic', ' Wave-school-level', 'Outcome', 'ID'];  
+  const domId = 'fields-types-checks';
   const fileId = $("#file-id").val(); 
 
   let fieldsTypes = await getFieldsTypes(fileId);
   fieldsTypes = fieldsTypes ? fieldsTypes : [];
   fieldsTypes = fieldsTypes.map((elem) => { return {'type': elem['fieldType'], 'checked': true}});
-  console.log("deli", fieldsTypes)
   for (const type of defaultFieldsTypesOptions) {
     if (!fieldsTypes.find(elem => elem['type'] === type)) {
       fieldsTypes.push({'type': type, 'checked': false});  
@@ -110,15 +108,16 @@ async function initializeFieldTypesMenu() {
   }
   html += '</form>';
 
-  $("#" + domId).append(html);
+  $("#" + domId).empty().append(html);
 }
 
-function onchangeFieldTypeCB(elem, event) {
+async function onchangeFieldTypeCB(elem, event) {
 
   event.preventDefault();
   const type = $(elem).val();
+  const fileId = $("#file-id").val();
   if ($(elem).is(":checked")) {    
-    const dataCols = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8'];
+    const dataCols = await getColumns(fileId);
     const colsSelectHTML = getFieldsTypesColsSelectHTML(dataCols, type);
     $("#fields-type-table tbody").append("<tr><td>" + type + "</td>" + 
                                           "<td id='" + getFieldTypeColsNumCellId(type) + "'>0</td>" + 

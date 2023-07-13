@@ -1,8 +1,25 @@
-function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
+async function onclickPreValidation(fileId, fileName, preValidationNotCompleted) {
 
   $("#file-id").val(fileId);   
   $("#prevalidation-file-name").text(fileName); 
   $('#pre-validation-tabs a:first').click(); //to always open the first tab   
+}
+
+async function getColumns(fileId) {
+
+  const url = '/api/files/columns/' + fileId;
+  const response = await fetch(url);
+  const result = await response.json();
+  return result['columns'];
+}
+
+function attachOptionsToSelectElem(cols, selectId) {
+
+  $("#"+ selectId).empty();
+  for (const col of cols) {
+    $("#"+ selectId).append('<option value="' + col + '">' + col + '</option>');
+  }
+  $("#"+ selectId).selectpicker("refresh");
 }
 
 function savePreValidation(stepName, successAction=null) {
@@ -27,14 +44,10 @@ function savePreValidation(stepName, successAction=null) {
             preValidationCompleted = false;
             break;
           }
-        }        
-        /*if (preValidationCompleted) {          
-          successAlert("You have completed all pre-validation steps and now you can proceed with validating your dataset.")
-        }*/
+        }       
         if (successAction) {
           successAction();
-        }
-        //saveVariableHierarchy(fileId);   
+        }         
       },
       error: function (result) {
         errorAlert(result.responseJSON.message);

@@ -4,7 +4,9 @@ const File = require('../models/file');
 const AWS = require('aws-sdk');
 const Config = require('../../config');
 const FS = require('fs');
-const Path = require('path');
+const Path = require('path'); 
+const Readline = require('readline');
+const ReadableStreamClone = require("readable-stream-clone");
 
 const FILES_DIR_PATH = Config.get('/datasetDirectoryPath');
 
@@ -44,23 +46,37 @@ const register = function (server, options) {
 
       if (!request.pre.fileNameIsUnique) {
         return {'success': false, 'fileName': ''};
-      }  
+      }
 
-      const fileStream = request.payload.file;
-      const fileStream2 = request.payload.file;
+      const fileStream = request.payload.file;      
+      const fileStream1 = new ReadableStreamClone(fileStream);
+      const fileStream2 = new ReadableStreamClone(fileStream);
+      const fileStream3 = new ReadableStreamClone(fileStream);
       const fileName = fileStream['hapi']['filename'];
       const bucketName = Config.get('/S3/bucketName'); 
-      const fileType = request.params.fileType;     
+      const fileType = request.params.fileType; 
+      let header;    
       
       try {
-        await uploadToS3(fileStream, fileName, bucketName, fileType);
-        await saveFile(fileStream, fileName, FILES_DIR_PATH);        
+        await uploadToS3(fileStream1, fileName, bucketName, fileType);
+        await saveFile(fileStream2, fileName, FILES_DIR_PATH); 
+        if (fileType === 'csv') {
+          header = await getFileHeader(fileStream3, fileName, FILES_DIR_PATH);  
+        }                 
       } 
       catch (err) {             
-        //throw Boom.badRequest('Unable to upload file because ' + err.message);
+        //throw Boom.badRequest('Unable to upload file because ' + err.message);        
         return {'success': false, 'fileName': ''};
       }
-      return {'success': true, 'fileName': fileName};
+
+      const result = {'success': true, 'fileName': fileName};
+      if (fileType === 'csv') {
+        const cols = header.split(',')
+                      .map(str => str.replace(/"/g, '').replace(/'/g, "").trim())
+                      .filter(str => str !== '');        
+        result['columns'] = cols;        
+      }
+      return result;
     }
   }); 
 
@@ -112,7 +128,7 @@ const register = function (server, options) {
       
       try {
         await deleteFromS3(bucketName, file.name, file.type);
-        deleteFileFromFileSystem(file.name, FILES_DIR_PATH);        
+        deleteFileFromFileSystem(file.name, FILES_DIR_PATH);               
       } 
       catch (err) {        
         throw Boom.badRequest('Unable to delete file because ' + err.message);
@@ -225,6 +241,23 @@ async function saveFile(readStream, fileName, path) {
       reject(e);
     }
   });    
+}
+
+function getFileHeader(readStream, fileName, path) {
+
+  path = Path.join(path, fileName);
+
+  const reader = Readline.createInterface({ input: readStream });  
+  return new Promise((resolve, reject) => {
+    try {
+      reader.on('line', (line) => {        
+        reader.close();
+        resolve(line);
+      });
+    } catch (e) {             
+      reject(e);
+    }    
+  }); 
 }
 
 function deleteFileFromFileSystem(fileName, path) {

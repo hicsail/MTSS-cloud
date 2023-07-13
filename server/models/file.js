@@ -13,14 +13,15 @@ class File extends AnchorModel {
     Assert.ok(doc.userId, 'Missing userId argument.');
     Assert.ok(doc.name, 'Missing name argument.');
     Assert.ok(doc.size, 'Missing size argument.'); 
-    Assert.ok(doc.type, 'Missing type argument.');    
+    Assert.ok(doc.type, 'Missing type argument.');       
     
     let document = {
       userId: doc.userId, //id of user who submitted 
       name: doc.name,
       size: doc.size,
       type: doc.type,
-      createdAt: new Date(),
+      columns: doc.columns ? doc.columns : [], 
+      createdAt: new Date(),      
       variablesHierarchy: null,
       readmeId: null,
       fieldsTypes: null, 
@@ -39,7 +40,7 @@ class File extends AnchorModel {
       Assert.ok(doc.userId, 'Missing userId argument.');
       Assert.ok(doc.name, 'Missing name argument.');
       Assert.ok(doc.size, 'Missing size argument.'); 
-      Assert.ok(doc.type, 'Missing type argument.'); 
+      Assert.ok(doc.type, 'Missing type argument.');  
 
       doc.createdAt = new Date(); 
       doc.preValidationSteps = this.initializePreValidationStepsObj();
@@ -48,6 +49,7 @@ class File extends AnchorModel {
       doc.readmeId = null;  
       doc.uniqueIdentifier = null; 
       doc.dfType = null;
+      doc.columns = doc.columns ? doc.columns : [];
     }    
     
     /*let document = {
@@ -82,7 +84,8 @@ File.schema = Joi.object({
   name: Joi.string().required(),
   size: Joi.number().required(),
   createdAt: Joi.date().required(),
-  type: Joi.string().required().valid('csv', 'readme', 'video', 'image')   
+  type: Joi.string().required().valid('csv', 'readme', 'video', 'image'),
+  columns: Joi.array().optional()   
 });
 
 File.preValidationStepsPayload = Joi.object({
@@ -122,7 +125,8 @@ File.routes = Hoek.applyToDefaults(AnchorModel.routes, {
     payload: Joi.object({      
       name: Joi.string().required(),
       size: Joi.number().required(),
-      type: Joi.string().required().valid('csv', 'readme', 'video', 'image')           
+      type: Joi.string().required().valid('csv', 'readme', 'video', 'image'),
+      columns: Joi.array().optional()           
     }),
     scope: []    
   },
@@ -130,7 +134,8 @@ File.routes = Hoek.applyToDefaults(AnchorModel.routes, {
     payload: Joi.object({      
       name: Joi.string().required(),
       size: Joi.number().required(),
-      type: Joi.string().required().valid('csv', 'readme', 'video', 'image')            
+      type: Joi.string().required().valid('csv', 'readme', 'video', 'image'),
+      columns: Joi.array().optional()             
     }), 
     scope: [],
     disabled: false    

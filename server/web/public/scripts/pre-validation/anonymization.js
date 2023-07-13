@@ -6,12 +6,16 @@ async function getUniqueIdentifier(fileId) {
   return result['uniqueIdentifier'];
 }
 
+
+
 async function onclickAnonymizationTab() {
 
-  const fileId = $("#file-id").val();
+  const fileId = $("#file-id").val();  
   const uniqueIdentifier = await getUniqueIdentifier(fileId);
+  const selectId = 'unique-identifier-select';  
+  const cols = await getColumns(fileId);
 
-  const selectId = 'unique-identifier-select';
+  attachOptionsToSelectElem(cols, selectId);
   $("#" + selectId).selectpicker('val', uniqueIdentifier)
   $("#" + selectId).val(uniqueIdentifier).selectpicker("refresh");
   $("#" + selectId).selectpicker("refresh");  
@@ -37,8 +41,11 @@ function onclickSaveUniqueIdentifier() {
 
   const selectId = 'unique-identifier-select'; 
   const fileId = $("#file-id").val();  
-  const uniqueIdentifier = $("#" + selectId).val(); 
-  savePreValidation('uniqueIdentifier', () => { saveUniqueIdentifier(fileId, uniqueIdentifier) });
+  const uniqueIdentifier = $("#" + selectId).val();  
+  savePreValidation('uniqueIdentifier', 
+                    () => { 
+                      saveUniqueIdentifier(fileId, uniqueIdentifier)
+                    });
 }
 
 function onclickIdentifyingColUserRadio(elem) {
@@ -76,5 +83,8 @@ function onchangeEditedFileInput(elem) {
 
     successAlert("File uploaded sucessfully!");    
   }  
-  deleteFile($fileId, () => { attachFiles(elem, 'csv')});    
+  deleteFile($fileId, 
+            () => { 
+              attachFiles(elem, 'csv')
+            });    
 }

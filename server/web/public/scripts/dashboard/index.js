@@ -52,10 +52,22 @@ function attachFiles(elem, fileType=null, successAction=null) {
   Promise.all(AJAXCalls).then(AJAXCallsResults => {    
     
     const uploadedFiles = AJAXCallsResults.map(res => res.fileName);
+    uploadedFilesDict = {};
+    for (const res of AJAXCallsResults) {      
+      uploadedFilesDict[res['fileName']] = {};
+      for (const key in res) {
+        uploadedFilesDict[res['fileName']][key] = res[key];
+      }
+    }
     const failedUploads = filesPayload.filter(file => !uploadedFiles.includes(file.name))
                                       .map(file => file.name);   
-    filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));
-
+    filesPayload = filesPayload.filter(file => uploadedFiles.includes(file.name));    
+    if (type === 'csv') {
+      for (const payload of filesPayload) {        
+        payload['columns'] = uploadedFilesDict[payload['name']]['columns'];
+      }
+    }
+    
     if (failedUploads.length > 0) { 
       errorAlert("unable to upload files " + failedUploads.join(', ') + '.'); 
     }

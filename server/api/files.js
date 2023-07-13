@@ -237,6 +237,27 @@ const register = function (server, options) {
 
   server.route({
     method: 'GET',
+    path: '/api/files/columns/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      return ({ message: 'Success', 'columns': file['columns'] });
+    }
+  });
+
+  server.route({
+    method: 'GET',
     path: '/api/files/fields-types/{id}',
     options: {
       auth: {
