@@ -311,7 +311,7 @@ function renderTreeLayout(data) {
 	.join('text')
 	.classed('label', true)
 	.attr('x', function(d) {return d.x;})
-	.attr('y', function(d) {return d.y - 10;})
+	.attr('y', function(d) {return d.y + 10;})
 	.text(function(d) {
 		return d.data.name;
 	});
@@ -348,9 +348,9 @@ function renderPackedCircles(data) {
 
 	nodes
 	.append('text')
-	.attr('dy', 7)
+	.attr('dy', function(d) { return d.children === undefined ? 0 : d.r; })
 	.text(function(d) {
-		return d.children === undefined ? d.data.name : '';		
+		return d.data.name;		
 	})	
 }
 

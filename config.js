@@ -126,7 +126,7 @@ const config = {
     $filter: 'env',
     production: process.env.DATASET_PATH,
     local: process.env.DATASET_PATH,
-    $default: '/home/arezoo/Documents/MTSS/files'
+    $default: ''
   }
 };
 
