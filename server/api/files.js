@@ -2,8 +2,58 @@
 const Boom = require('boom');
 const Joi = require('joi');
 const File = require('../models/file');
+const FS = require('fs');
+const Path = require('path');
+const Config = require('../../config');
+const Spawn = require('child_process').spawn;
+const Exec = require('child_process').exec;
+const Promisify = require('util').promisify;
+
+const FILES_DIR_PATH = Config.get('/datasetDirectoryPath');
 
 const register = function (server, options) { 
+
+  server.route({
+    method: 'GET',
+    path: '/api/files/anonymization/column-check/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }      
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      const fileName = file.name;
+      let columns;
+
+      const scriptPath = Path.join(__dirname, '../python-scripts/column_check.py');       
+      const dataPath = Path.join(FILES_DIR_PATH, fileName); 
+
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      }
+
+      if (!FS.existsSync(scriptPath)) {
+        throw Boom.badRequest("Python script wasn't found!");
+      }        
+
+      try {
+        columns = await anonymizationColumnCheck(scriptPath, dataPath);       
+      }
+      catch(error) {
+        throw Boom.badRequest('Unable to find HIPAA violating columns!');  
+      }    
+      
+      return ({ message: 'Success', 'columns': JSON.parse(JSON.stringify(columns))});
+    }
+  });
 
   server.route({
     method: 'PUT',
@@ -335,6 +385,36 @@ const register = function (server, options) {
     }
   });
 };
+
+async function anonymizationColumnCheck(scriptPath, dataPath) {
+  
+  let result = '';
+  return new Promise(async (resolve, reject) => {
+
+    try {  
+      
+      const runCommand = Spawn('python', [scriptPath, '--csv_path', dataPath]);
+      runCommand.stdout.on('data', (data) => {
+        result += data.toString();        
+      });
+      runCommand.stdout.on('end', (data) => {               
+        resolve(result);                   
+      });
+      runCommand.stderr.on('data', (data) => {      
+        reject(data.toString());        
+      });
+      runCommand.on('error', err => {        
+        throw new Error(err.message);
+      });
+      runCommand.on('close', code => {        
+        resolve(code)
+        //throw new Error('Exit with code' + code);
+      });
+    } catch (e) {      
+      reject(e);
+    }
+  }); 
+}
 
 module.exports = {
   name: 'files',

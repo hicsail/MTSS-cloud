@@ -3,12 +3,8 @@
   <div class="card-body">
     <h5 class="card-title"></h5>
     <p class="card-text">Our system has identifed the following columns to have potentially identifying information.</p>
-    <div id="identifying-cols-list" class="ml-2 font-weight-bold">
-      <p>Student Name</p>
-      <p>Parent Name</p>
-      <p>Teacher Information</p>                        
-    </div>       
-    
+    <div id="identifying-cols-list" class="ml-2 font-weight-bold">                         
+    </div>           
 
     <p class="card-text">Please make sure you data doesn't contain any identifying information by either removing the corresponding columns automatically or manually editing the dataset.</p>    
 
@@ -22,7 +18,16 @@
           </label>
         </div>
         <div class="collapse col" id="identifying-cols-dropdown">
-          <div class="btn-group">
+          <select class="selectpicker show-tick"
+            id="remove-identifying-cols-select" 
+            data-live-search="true" 
+            data-style="btn-white" 
+            data-size="5"                                                    
+            data-title="Select columns with identifying information" 
+            multiple               
+          >              
+          </select>
+          <!--<div class="btn-group">
             <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
               Select columns with identifying information
             </button>
@@ -60,8 +65,9 @@
                 </div>                            
               </form>
             </div>
-          </div>
+          </div>-->
         </div>
+
       </div>
 
       <div class="row">

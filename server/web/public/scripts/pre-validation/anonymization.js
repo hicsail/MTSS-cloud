@@ -6,19 +6,39 @@ async function getUniqueIdentifier(fileId) {
   return result['uniqueIdentifier'];
 }
 
+async function getHIPAAColumns(fileId) {
 
+  const url = '/api/files/anonymization/column-check/' + fileId;
+  const response = await fetch(url);
+  const result = await response.json();
+  const columns = result['columns'].replace(/\[|\]/g,'')
+                  .split(',')
+                  .map(str => str.replace(/"/g, '').replace(/'/g, "").trim())
+                  .filter(str => str !== '');
+  return columns;
+}
 
 async function onclickAnonymizationTab() {
 
   const fileId = $("#file-id").val();  
   const uniqueIdentifier = await getUniqueIdentifier(fileId);
-  const selectId = 'unique-identifier-select';  
+  const HIPAAColumns = await getHIPAAColumns(fileId);
+  const selectId = 'unique-identifier-select'; 
+  const removeIdentifyingSelectId = 'remove-identifying-cols-select';
+  const identifiedHipaaDivId = 'identifying-cols-list'; 
   const cols = await getColumns(fileId);
 
   attachOptionsToSelectElem(cols, selectId);
   $("#" + selectId).selectpicker('val', uniqueIdentifier)
   $("#" + selectId).val(uniqueIdentifier).selectpicker("refresh");
-  $("#" + selectId).selectpicker("refresh");  
+  $("#" + selectId).selectpicker("refresh");
+
+  attachOptionsToSelectElem(HIPAAColumns, removeIdentifyingSelectId);  
+
+  $("#" + identifiedHipaaDivId).empty();
+  for (const col of HIPAAColumns) {
+    $("#" + identifiedHipaaDivId).append("<p>" + col + "</p>");
+  }
 }
 
 function saveUniqueIdentifier(fileId, uniqueIdentifier) {  
