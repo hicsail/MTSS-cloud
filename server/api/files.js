@@ -539,7 +539,7 @@ async function anonymizationColumnCheck(scriptPath, dataPath) {
   return new Promise(async (resolve, reject) => {
 
     try {        
-      const runCommand = Spawn('python', [scriptPath, '--csv_path', dataPath]);
+      const runCommand = Spawn('python3', [scriptPath, '--csv_path', dataPath]);
       runCommand.stdout.on('data', (data) => {
         result += data.toString();        
       });
