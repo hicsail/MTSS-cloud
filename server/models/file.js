@@ -120,6 +120,10 @@ File.dfTypePayload = Joi.object({
   dfType: Joi.string().required().valid('screening', 'intervention')
 });
 
+File.removeIdentifyingColsPayload = Joi.object({
+  identifyingCols: Joi.array().required()
+});
+
 File.routes = Hoek.applyToDefaults(AnchorModel.routes, {  
   create: {
     payload: Joi.object({      

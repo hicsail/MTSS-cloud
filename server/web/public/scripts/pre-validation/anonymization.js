@@ -57,6 +57,27 @@ function saveUniqueIdentifier(fileId, uniqueIdentifier) {
   });  
 }
 
+function onclickSaveRemovedCols() {
+
+  const selectId = 'remove-identifying-cols-select'; 
+  const fileId = $("#file-id").val();  
+  const identifyingCols = $("#" + selectId).val(); 
+  
+  $.ajax({      
+    type: 'PUT',
+    url: '/api/files/remove-identifying-cols/' + fileId, 
+    contentType: 'application/json',   
+    data: JSON.stringify({identifyingCols: identifyingCols}),                        
+    success: function (result) {               
+      successAlert("Successfuly removed selected columns for the file!");  
+      onclickAnonymizationTab();
+    },
+    error: function (result) {
+      errorAlert(result.responseJSON.message);
+    }
+  });  
+}
+
 function onclickSaveUniqueIdentifier() {
 
   const selectId = 'unique-identifier-select'; 
