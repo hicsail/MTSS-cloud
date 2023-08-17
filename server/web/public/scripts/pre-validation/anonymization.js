@@ -33,7 +33,7 @@ async function onclickAnonymizationTab() {
   $("#" + selectId).val(uniqueIdentifier).selectpicker("refresh");
   $("#" + selectId).selectpicker("refresh");
 
-  attachOptionsToSelectElem(HIPAAColumns, removeIdentifyingSelectId);
+  attachOptionsToSelectElem(cols, removeIdentifyingSelectId);
   attachOptionsToSelectElem(cols, 'anonymization-on-req-column');    
 
   $("#" + identifiedHipaaDivId).empty();
@@ -67,7 +67,7 @@ function onclickAnonymizationOnReqSave() {
   const fileId = $("#file-id").val();
   const tableId = 'anonymization-on-req-table';
   const anonymizationRequests = anonymizationColsFromTable(tableId);  
-  
+
   $.ajax({      
     type: 'PUT',
     url: '/api/files/anonymization-on-request/' + fileId, 
