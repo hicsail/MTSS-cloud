@@ -26,46 +26,7 @@
             data-title="Select columns with identifying information" 
             multiple               
           >              
-          </select>
-          <!--<div class="btn-group">
-            <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
-              Select columns with identifying information
-            </button>
-            <div class="dropdown-menu dropdown-menu-right">
-              <form class="px-4 py-3">                            
-                <div class="form-check ml-4">
-                  <input class="form-check-input" type="checkbox" value="Student Name" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
-                  <label class="form-check-label" for="identifying-col-1">
-                    Student Name
-                  </label>
-                </div>
-                <div class="form-check ml-4">
-                  <input class="form-check-input" type="checkbox" value="Parent Name" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
-                  <label class="form-check-label" for="identifying-col-1">
-                    Parent Name
-                  </label>
-                </div>
-                <div class="form-check ml-4">
-                  <input class="form-check-input" type="checkbox" value="Teacher Information" id="identifying-col-1" checked onchange="onchangeIdentifyingColCB(this)">
-                  <label class="form-check-label" for="identifying-col-1">
-                    Teacher Information
-                  </label>
-                </div>
-                <div class="form-check ml-4">
-                  <input class="form-check-input" type="checkbox" value="DOB" id="identifying-col-1" onchange="onchangeIdentifyingColCB(this)">
-                  <label class="form-check-label" for="identifying-col-1">
-                    DOB
-                  </label>
-                </div> 
-                <div class="form-check ml-4">
-                  <input class="form-check-input" type="checkbox" value="Address" id="identifying-col-1" onchange="onchangeIdentifyingColCB(this)">
-                  <label class="form-check-label" for="identifying-col-1">
-                    Address
-                  </label>
-                </div>                            
-              </form>
-            </div>
-          </div>-->
+          </select>          
         </div>
 
       </div>
@@ -91,6 +52,75 @@
         <button class="btn btn-info" onclick="onclickSaveRemovedCols()">Save</button>
       </div>
     </div>    
+  </div>
+</div>
+<div class="card">
+  <div class="card-header font-weight-bold">
+    Anonymization on request
+  </div>
+  <div class="card-body">    
+    <p>Please select the columns that you want to anonymize. For each column, please select a type and mode.</p>
+    <div class="row" style="text-align: center;">
+      <div class="col">        
+        <select class="selectpicker show-tick"
+            id="anonymization-on-req-column" 
+            data-live-search="true" 
+            data-style="btn-white" 
+            data-size="5"                                                    
+            data-title="Select a column"
+        >      
+        </select>
+      </div>
+    </div><br> 
+    <div class="row" style="text-align: center;">     
+      <div class="col">
+        <select class="selectpicker show-tick"
+            id="anonymization-on-req-type" 
+            data-live-search="true" 
+            data-style="btn-white" 
+            data-size="5"                                                    
+            data-title="Select type">
+              <option value="NAME">NAEM</option>
+              <option value="DATE">DATE</option>
+              <option value="AGE">AGE</option>      
+        </select>
+      </div>
+    </div><br>
+    <div class="row" style="text-align: center;">     
+      <div class="col">
+        <select class="selectpicker show-tick"
+            id="anonymization-on-req-mode" 
+            data-live-search="true" 
+            data-style="btn-white" 
+            data-size="5"                                                    
+            data-title="Select mode">
+              <option value="REDACT">REDACT</option>
+              <option value="RECODE">RECODEE</option>      
+        </select>
+      </div>      
+    </div><br>
+    <div class="row" style="text-align: center;">
+      <div class="col">
+        <button class="btn btn-info" onclick="onclickAddAnonimizationOnReqCol()">Add Column to anonymization table</button>
+      </div>
+    </div><br>    
+    <table class="table" id="anonymization-on-req-table">
+      <thead>
+        <tr>                              
+          <th scope="col">Column</th>                              
+          <th scope="col">Type</th>
+          <th scope="col">Mode</th>
+        </tr>
+      </thead>
+      <tbody id="anonymization-on-req-table-tbody">                                        
+      </tbody>
+    </table>          
+    <br>
+    <div class="row mt-2">
+      <div class="col">
+        <button class="btn btn-info" onclick="onclickAnonymizationOnReqSave()">Anonymize And Save</button>
+      </div>
+    </div>      
   </div>
 </div>
 <div class="card">

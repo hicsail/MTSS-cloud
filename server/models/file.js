@@ -124,6 +124,14 @@ File.removeIdentifyingColsPayload = Joi.object({
   identifyingCols: Joi.array().required()
 });
 
+File.anonymizationOnRequestPayload = Joi.object({
+  anonymizationRequests: Joi.array().items(Joi.object({
+    key: Joi.string().required(),
+    type: Joi.string().required(),  
+    mode: Joi.string().required()
+  }))
+});
+
 File.routes = Hoek.applyToDefaults(AnchorModel.routes, {  
   create: {
     payload: Joi.object({      

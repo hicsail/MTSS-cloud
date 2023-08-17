@@ -33,12 +33,77 @@ async function onclickAnonymizationTab() {
   $("#" + selectId).val(uniqueIdentifier).selectpicker("refresh");
   $("#" + selectId).selectpicker("refresh");
 
-  attachOptionsToSelectElem(HIPAAColumns, removeIdentifyingSelectId);  
+  attachOptionsToSelectElem(HIPAAColumns, removeIdentifyingSelectId);
+  attachOptionsToSelectElem(cols, 'anonymization-on-req-column');    
 
   $("#" + identifiedHipaaDivId).empty();
   for (const col of HIPAAColumns) {
     $("#" + identifiedHipaaDivId).append("<p>" + col + "</p>");
   }
+}
+
+function onclickAddAnonimizationOnReqCol() {
+
+  const selectDomIds = ['anonymization-on-req-column', 
+                        'anonymization-on-req-type', 
+                        'anonymization-on-req-mode'];
+
+  const col = $("#anonymization-on-req-column").val();
+  const type = $("#anonymization-on-req-type").val();
+  const mode = $("#anonymization-on-req-mode").val();
+
+  $("#anonymization-on-req-table tbody").append("<tr><td>" + col + "</td>" + 
+                                          "<td>" + type + "</td>" + 
+                                          "<td>" + mode + "</td>" +
+                                          "</tr>");
+  for (const id of selectDomIds) {
+    $("#" + id).val("");
+    $("#" + id).selectpicker("refresh")
+  }
+}
+
+function onclickAnonymizationOnReqSave() {
+
+  const fileId = $("#file-id").val();
+  const tableId = 'anonymization-on-req-table';
+  const anonymizationRequests = anonymizationColsFromTable(tableId);  
+  
+  $.ajax({      
+    type: 'PUT',
+    url: '/api/files/anonymization-on-request/' + fileId, 
+    contentType: 'application/json',   
+    data: JSON.stringify({anonymizationRequests: anonymizationRequests}),                        
+    success: function (result) {               
+      successAlert("Successfuly anonymized selected columns and saved file!");  
+      onclickAnonymizationTab();
+    },
+    error: function (result) {
+      errorAlert(result.responseJSON.message);
+    }
+  }); 
+}
+
+function anonymizationColsFromTable(tableId) {
+
+  let anonymizationCols = [];
+  let rows = $("#" + tableId + " tbody").find('tr');  
+  rows.each(function() {       
+    let cols = $(this).find('td'); 
+    let elem = {};    
+    cols.each(function(idx) { 
+      if (idx === 0) {        
+        elem['key'] = $(this).text();  
+      }
+      else if (idx === 1) {               
+        elem['type'] = $(this).text(); 
+      }
+      else if (idx === 2) {
+        elem['mode'] = $(this).text();   
+      }
+    });        
+    anonymizationCols.push(elem);
+  });  
+  return anonymizationCols; 
 }
 
 function saveUniqueIdentifier(fileId, uniqueIdentifier) {  

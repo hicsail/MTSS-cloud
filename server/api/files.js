@@ -59,6 +59,54 @@ const register = function (server, options) {
 
   server.route({
     method: 'PUT',
+    path: '/api/files/anonymization-on-request/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      },
+      validate: {
+        payload: File.anonymizationOnRequestPayload
+      }     
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id; 
+      const anonymizationRequests = request.payload.anonymizationRequests;    
+      
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      const fileName = file.name;
+      let updatedContent;
+
+      const scriptPath = Path.join(__dirname, '../python-scripts/anonymize_on_request.py');       
+      const dataPath = Path.join(FILES_DIR_PATH, fileName); 
+
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      }
+
+      if (!FS.existsSync(scriptPath)) {
+        throw Boom.badRequest("Python script wasn't found!");
+      }        
+
+      try {
+        updatedContent = await anonymizationOnRequest(scriptPath, dataPath, JSON.stringify(anonymizationRequests)); 
+        FS.writeFileSync(dataPath, updatedContent);        
+        await uploadToS3(updatedContent, fileName, file.type);             
+      }
+      catch(error) {        
+        throw Boom.badRequest('Unable to perfom requested anonymization!');  
+      }    
+      
+      return ({ message: 'Success'});
+    }
+  });
+
+  server.route({
+    method: 'PUT',
     path: '/api/files/pre-validation/{id}',
     options: {
       auth: {
@@ -531,6 +579,36 @@ async function removeIdentifyingColumns(fileName, dataPath, identifyingCols) {
       reject(e);
     }
   });        
+}
+
+async function anonymizationOnRequest(scriptPath, dataPath, requests) {
+  
+  let result = '';
+  return new Promise(async (resolve, reject) => {
+
+    try {        
+      const runCommand = Spawn('python3', [scriptPath, '--csv_path', dataPath, '--requests', requests]);
+      runCommand.stdout.on('data', (data) => {
+        result += data.toString();        
+      });
+      runCommand.stdout.on('end', (data) => {               
+        resolve(result);                   
+      });
+      runCommand.stderr.on('data', (data) => {                  
+        reject(data.toString());        
+      });
+      runCommand.on('error', err => {        
+        throw new Error(err.message);
+      });
+      runCommand.on('close', code => {        
+        resolve(code)
+        //throw new Error('Exit with code' + code);
+      });
+    } catch (e) {          
+      reject(e);
+    }
+  }); 
+
 }
 
 async function anonymizationColumnCheck(scriptPath, dataPath) {
