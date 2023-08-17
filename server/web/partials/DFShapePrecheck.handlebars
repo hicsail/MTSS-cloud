@@ -5,8 +5,9 @@
   <div class="card-body">
     <h5 class="card-title"></h5>
     <p class="font-weight-bold">Our system has identified that your data file has a long- format shape.</p>
-    <p class="card-text">A wide-format data file will typically have a smaller number of rows and a larger number of columns, while a long-format data file will have a larger number of rows and a smaller number of columns. </p>
-    <p>A long-format datafile will typically have one or more "id" columns that identify each observation, along with a "value" column that contains the observed data. A wide-format data file, on the other hand, will typically have separate columns for each observed variable</p>  
+    <p>The primary distinction between wide and long formats revolves around the number of rows allocated to each participant:</p>
+    <p class="card-text">In a <strong>long-format</strong> data file, each participant typically has multiple rows, with each row representing a different observation or measurement for that participant. This format often includes one or more "id" columns to identify each participant, accompanied by a "value" column for the observed data</p>
+    <p>In a <strong>wide-format</strong> data file, each participant is usually represented by a single row. Distinct measurements or observations for that participant are spread across multiple columns.</p>  
     <div class="form-group w-50">
       
       <select class="selectpicker w-100 show-tick"
