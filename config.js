@@ -126,8 +126,8 @@ const config = {
     $filter: 'env',
     production: process.env.DATASET_PATH,
     local: process.env.DATASET_PATH,
-    $default: ''
-  }
+    $default: '/Users/asadeg02/Documents/MTSS-files'
+  }  
 };
 
 

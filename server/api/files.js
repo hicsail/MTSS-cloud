@@ -500,6 +500,46 @@ const register = function (server, options) {
       return ({ message: 'Success'});
     }
   });
+
+  server.route({
+    method: 'PUT',
+    path: '/api/files/viz/missing_data/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }        
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;          
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      const fileName = file.name;  
+      const scriptPath = Path.join(__dirname, '../python-scripts/viz/missing_data.py');                  
+      const dataPath = Path.join(FILES_DIR_PATH, fileName);       
+      const outputPath = Path.join(__dirname, '../web/public/viz', id);
+      let imageNames;
+
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      }            
+      
+      try {
+        imageNames = await MissingDataViz(scriptPath, dataPath, outputPath);     
+         
+      }
+      catch (e) {      
+        throw Boom.badRequest("Unable to create missing data visualizationas " + e.message);
+      }                       
+      return ({ message: 'Success', 
+              imageNames: JSON.parse(JSON.stringify(imageNames))
+            });
+    }
+  });
 };
 
 function getFileColumns(dataPath) {
@@ -635,6 +675,40 @@ async function anonymizationColumnCheck(scriptPath, dataPath) {
         //throw new Error('Exit with code' + code);
       });
     } catch (e) {      
+      reject(e);
+    }
+  }); 
+}
+
+async function MissingDataViz(scriptPath, dataPath, outputPath) {
+  
+  let result = '';
+  return new Promise(async (resolve, reject) => {
+
+    try {  
+      if (!FS.existsSync(outputPath)) { //if directory for data visualziation doesn't exist        
+        FS.mkdirSync(outputPath);        
+      }            
+      const runCommand = Spawn('python3', [scriptPath, '--csv_path', dataPath, '--output_path', outputPath]);      
+      runCommand.stdout.on('data', (data) => {
+        result += data.toString();        
+      });
+      runCommand.stdout.on('end', (data) => {               
+        resolve(result);                   
+      });
+      runCommand.stderr.on('data', (data) => {
+        console.log(data.toString())            
+        reject(data.toString());        
+      });
+      runCommand.on('error', err => {        
+        throw new Error(err.message);
+      });
+      runCommand.on('close', code => {        
+        resolve(code)
+        //throw new Error('Exit with code' + code);
+      });
+    } catch (e) {       
+      console.log(e)     
       reject(e);
     }
   }); 

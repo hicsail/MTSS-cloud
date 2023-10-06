@@ -107,6 +107,38 @@
         </div>
       </div>
 
+      <!-- Data Visualization modal -->          
+      <div class="modal fade" tabindex="-1" role="dialog" id="data-viz-modal">
+        <div class="modal-dialog" role="document" style="min-width:50%;">
+          <div class="modal-content" style="max-height:900px; overflow-y:auto;">
+            <div class="modal-header">
+              <h5 class="modal-title font-weight-bold">Data Visualization
+                <span id="visualization-file-name"></span>
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">                
+              <input type="hidden" id="data-viz-file-id">
+              <ul class="nav nav-tabs" id="data-viz-tabs">                  
+                <li class="nav-item">
+                  <a class="nav-link bg-white active" href="#missing-data-viz" data-toggle="tab" role="tab" onclick="onclickMissingDataVizTab()">Missing Data Visualizations</a>
+                </li>                                                                                        
+              </ul>
+              <div class="tab-content" id="data-viz-tab-content">
+                <div class="tab-pane fade show in active" id="missing-data-viz" role="tabpanel">
+                  {{> missingDataViz}}
+                </div>                                                                                               
+              </div>  
+            </div>
+            <div class="modal-footer">                  
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <ul class="nav nav-tabs" id="files-tabs">                  
         <li class="nav-item">
           <a class="nav-link bg-white active" href="#csvs" data-toggle="tab" role="tab">CSV</a>
@@ -146,7 +178,8 @@
                       </button>
                       <div class="dropdown-menu" aria-labelledby="validation-dropdown-btn-{{_id}}">
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#pre-validation-modal" onclick="onclickPreValidation('{{_id}}', '{{name}}', {{file.preValidationNotCompleted}})">Pre-validation</a>
-                        <a class="dropdown-item {{#if file.preValidationNotCompleted}}disabled{{/if}}" href="#" id="prevalidation-dropdown-link-{{_id}}">validation</a>    
+                        <a class="dropdown-item {{#if file.preValidationNotCompleted}}disabled{{/if}}" href="#" id="prevalidation-dropdown-link-{{_id}}">validation</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#data-viz-modal" onclick="onclickDataVisualization('{{_id}}', '{{name}}')">Visualization</a>   
                       </div>
                     </div>
                   </td>
@@ -193,6 +226,8 @@
 <script type="text/javascript" src="/public/scripts/pre-validation/variable-level.js"></script>
 <script type="text/javascript" src="/public/scripts/pre-validation/df-shape.js"></script>
 <script type="text/javascript" src="/public/scripts/pre-validation/common.js"></script>
+<script type="text/javascript" src="/public/scripts/visualizations/common.js"></script>
+<script type="text/javascript" src="/public/scripts/visualizations/missingData.js"></script>
 <script type="text/javascript" src="/public/scripts/dashboard/index.js"></script>
 <style>
   #progressStatus {
