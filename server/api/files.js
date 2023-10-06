@@ -529,7 +529,48 @@ const register = function (server, options) {
       }            
       
       try {
-        imageNames = await MissingDataViz(scriptPath, dataPath, outputPath);     
+        imageNames = await missingDataViz(scriptPath, dataPath, outputPath);     
+         
+      }
+      catch (e) {      
+        throw Boom.badRequest("Unable to create missing data visualizationas " + e.message);
+      }                       
+      return ({ message: 'Success', 
+              imageNames: JSON.parse(JSON.stringify(imageNames))
+            });
+    }
+  });
+
+  server.route({
+    method: 'PUT',
+    path: '/api/files/viz/data_distribution/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }        
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id; 
+      const column = request.payload.column;          
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      const fileName = file.name;  
+      const scriptPath = Path.join(__dirname, '../python-scripts/viz/data_distribution.py');                  
+      const dataPath = Path.join(FILES_DIR_PATH, fileName);       
+      const outputPath = Path.join(__dirname, '../web/public/viz', id);
+      let imageNames;
+
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      }            
+      
+      try {
+        imageNames = await dataDistributionViz(scriptPath, dataPath, outputPath, column);     
          
       }
       catch (e) {      
@@ -680,7 +721,7 @@ async function anonymizationColumnCheck(scriptPath, dataPath) {
   }); 
 }
 
-async function MissingDataViz(scriptPath, dataPath, outputPath) {
+async function missingDataViz(scriptPath, dataPath, outputPath) {
   
   let result = '';
   return new Promise(async (resolve, reject) => {
@@ -690,6 +731,40 @@ async function MissingDataViz(scriptPath, dataPath, outputPath) {
         FS.mkdirSync(outputPath);        
       }            
       const runCommand = Spawn('python3', [scriptPath, '--csv_path', dataPath, '--output_path', outputPath]);      
+      runCommand.stdout.on('data', (data) => {
+        result += data.toString();        
+      });
+      runCommand.stdout.on('end', (data) => {               
+        resolve(result);                   
+      });
+      runCommand.stderr.on('data', (data) => {
+        console.log(data.toString())            
+        reject(data.toString());        
+      });
+      runCommand.on('error', err => {        
+        throw new Error(err.message);
+      });
+      runCommand.on('close', code => {        
+        resolve(code)
+        //throw new Error('Exit with code' + code);
+      });
+    } catch (e) {       
+      console.log(e)     
+      reject(e);
+    }
+  }); 
+}
+
+async function dataDistributionViz(scriptPath, dataPath, outputPath, column) {
+  
+  let result = '';
+  return new Promise(async (resolve, reject) => {
+
+    try {  
+      if (!FS.existsSync(outputPath)) { //if directory for data visualziation doesn't exist        
+        FS.mkdirSync(outputPath);        
+      }            
+      const runCommand = Spawn('python3', [scriptPath, '--csv_path', dataPath, '--output_path', outputPath, '--column_name', column]);      
       runCommand.stdout.on('data', (data) => {
         result += data.toString();        
       });

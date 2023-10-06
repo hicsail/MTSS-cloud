@@ -16,7 +16,7 @@ async function getColumns(fileId) {
 function attachOptionsToSelectElem(cols, selectId) {
 
   $("#"+ selectId).empty();
-  for (const col of cols) {
+  for (const col of cols) {    
     $("#"+ selectId).append('<option value="' + col + '">' + col + '</option>');
   }
   $("#"+ selectId).selectpicker("refresh");

@@ -1,0 +1,27 @@
+<div class="card" id="data-distribution-card">
+  <div class="card-header font-weight-bold">
+    Data Distributions Visualizations
+  </div>
+  <div class="card-body">                        
+    <h7 class="card-title">
+      Please select a column from the dropdown below, to visualize the distribution of the values for this column.
+    </h7>
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">        
+        <select class="selectpicker show-tick w-100"
+          id="data-dist-cols-select" 
+          data-live-search="true" 
+          data-style="btn-white" 
+          data-size="5"                                                    
+          data-title="Select a column"  
+          onchange="onchangeColDistSelect(this)"                        
+          >              
+        </select>          
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+    <p class="card-text"></p>           
+  </div>
+  <div class="results"></div>
+</div>

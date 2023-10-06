@@ -109,7 +109,7 @@
 
       <!-- Data Visualization modal -->          
       <div class="modal fade" tabindex="-1" role="dialog" id="data-viz-modal">
-        <div class="modal-dialog" role="document" style="min-width:50%;">
+        <div class="modal-dialog" role="document" style="min-width:50%;height:700px;overflow-y:auto;">
           <div class="modal-content" style="max-height:900px; overflow-y:auto;">
             <div class="modal-header">
               <h5 class="modal-title font-weight-bold">Data Visualization
@@ -124,12 +124,18 @@
               <ul class="nav nav-tabs" id="data-viz-tabs">                  
                 <li class="nav-item">
                   <a class="nav-link bg-white active" href="#missing-data-viz" data-toggle="tab" role="tab" onclick="onclickMissingDataVizTab()">Missing Data Visualizations</a>
-                </li>                                                                                        
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link bg-white" href="#distribution-viz" data-toggle="tab" role="tab" onclick="onclickDistributionVizTab()">Data Distribution Visualizations</a>
+                </li>                                                                                         
               </ul>
               <div class="tab-content" id="data-viz-tab-content">
                 <div class="tab-pane fade show in active" id="missing-data-viz" role="tabpanel">
                   {{> missingDataViz}}
-                </div>                                                                                               
+                </div>
+                <div class="tab-pane fade" id="distribution-viz" role="tabpanel">              
+                  {{> dataDistributionViz}}
+                </div>                                                                                                
               </div>  
             </div>
             <div class="modal-footer">                  
@@ -228,6 +234,7 @@
 <script type="text/javascript" src="/public/scripts/pre-validation/common.js"></script>
 <script type="text/javascript" src="/public/scripts/visualizations/common.js"></script>
 <script type="text/javascript" src="/public/scripts/visualizations/missingData.js"></script>
+<script type="text/javascript" src="/public/scripts/visualizations/dataDistributionViz.js"></script>
 <script type="text/javascript" src="/public/scripts/dashboard/index.js"></script>
 <style>
   #progressStatus {

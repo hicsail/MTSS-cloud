@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 def get_parser():
     parser = argparse.ArgumentParser(description='Options')
     parser.add_argument('--csv_path', default=None, type=str, help='Path to CSV file.')
-    parser.add_argument('--output_path', default=None, type=str, help='Path to CSV file.')    
+    parser.add_argument('--output_path', default=None, type=str, help='Path to output file.')    
     return parser
 
 if __name__ == "__main__":
