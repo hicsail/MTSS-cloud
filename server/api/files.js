@@ -56,7 +56,7 @@ const register = function (server, options) {
       return ({ message: 'Success', 'columns': JSON.parse(JSON.stringify(columns))});
     }
   });
-
+  
   server.route({
     method: 'PUT',
     path: '/api/files/anonymization-on-request/{id}',
@@ -436,9 +436,39 @@ const register = function (server, options) {
       }
 
       const fileName = file.name;
-      const dataPath = Path.join(FILES_DIR_PATH, fileName); 
+      const dataPath = Path.join(FILES_DIR_PATH, fileName);
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      } 
       const columns = getFileColumns(dataPath);            
       return ({columns});
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/files/content/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {            
+
+      const id = request.params.id;
+      const  file = await File.findById(id);
+
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      const fileName = file.name;
+      const dataPath = Path.join(FILES_DIR_PATH, fileName); 
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      }
+      const content = getFileContent(dataPath);            
+      return ({content});
     }
   });
 
@@ -583,6 +613,12 @@ const register = function (server, options) {
   });
 };
 
+function getFileContent(dataPath) {
+
+  const data = FS.readFileSync(dataPath, {encoding:'utf8', flag:'r'});
+  return data;
+}
+
 function getFileColumns(dataPath) {
 
   const data = FS.readFileSync(dataPath, {encoding:'utf8', flag:'r'});  
@@ -599,8 +635,9 @@ async function removeIdentifyingColumns(fileName, dataPath, identifyingCols) {
   const headerCols = rows[0].split(',')
                             .map(str => str.replace(/"/g, '').replace(/'/g, "").trim())
                             
-                            
+  console.log("sepideh", headerCols)                          
   const headerIndices = identifyingCols.map((col) => headerCols.indexOf(col));
+  console.log("arezoo", headerIndices)
   const headerLength = headerCols.length - headerIndices.length;
   
   let updatedRows = [];
@@ -641,19 +678,21 @@ async function removeIdentifyingColumns(fileName, dataPath, identifyingCols) {
         reject(error);
       });*/
       for (let row of rows) {
-        //row = row.replace(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g, '###COMMA###');
-        let updatedRow = [];
-        //const vals = row.split(',').map(str => str.trim());
-        const vals = row.splitCSV(); 
-        for (let i=0; i<vals.length; ++i) {
-          const val = vals[i];
-          if (!headerIndices.includes(i)) {
-            updatedRow.push(val)
+        if (row) {
+          //row = row.replace(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g, '###COMMA###');
+          let updatedRow = [];
+          //const vals = row.split(',').map(str => str.trim());  
+          const vals = row.splitCSV();         
+          for (let i=0; i<vals.length; ++i) {
+            const val = vals[i];
+            if (!headerIndices.includes(i)) {
+              updatedRow.push(val)
+            }
           }
-        }
-        if (updatedRow.length === headerLength) {
-          updatedRows.push(updatedRow.join(','));    
-        }                     
+          if (updatedRow.length === headerLength) {
+            updatedRows.push(updatedRow.join(','));    
+          } 
+        }                    
       }
       resolve(updatedRows.join('\n'))      
     } catch (e) {      

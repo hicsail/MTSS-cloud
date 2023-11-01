@@ -39,7 +39,7 @@ async function onclickAnonymizationTab() {
   $("#" + identifiedHipaaDivId).empty();
   for (const col of HIPAAColumns) {
     $("#" + identifiedHipaaDivId).append("<p>" + col + "</p>");
-  }
+  }   
 }
 
 function onclickAddAnonimizationOnReqCol() {

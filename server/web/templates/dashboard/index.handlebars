@@ -55,8 +55,8 @@
 
       <!-- Pre-validation modal -->          
       <div class="modal fade" tabindex="-1" role="dialog" id="pre-validation-modal">
-        <div class="modal-dialog" role="document" style="min-width:50%;">
-          <div class="modal-content" style="max-height:900px; overflow-y:auto;">
+        <div class="modal-dialog modal-xl" role="document" style="min-width:70%;">
+          <div class="modal-content" style="max-height:800px; overflow-y:auto;">
             <div class="modal-header">
               <h5 class="modal-title font-weight-bold">Pre-validation steps for file <span id="prevalidation-file-name"></span></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -65,9 +65,12 @@
             </div>
             <div class="modal-body">                
               <input type="hidden" id="file-id">
-              <ul class="nav nav-tabs" id="pre-validation-tabs">                  
+              <ul class="nav nav-tabs" id="pre-validation-tabs">
                 <li class="nav-item">
-                  <a class="nav-link bg-white active" href="#anonymization" data-toggle="tab" role="tab" onclick="onclickAnonymizationTab()">Research Anonymization</a>
+                  <a class="nav-link bg-white active" href="#dataset-preview" data-toggle="tab" role="tab" onclick="onclickDatasetPreviewTab()">Dataset preview</a>
+                </li>                  
+                <li class="nav-item">
+                  <a class="nav-link bg-white" href="#anonymization" data-toggle="tab" role="tab" onclick="onclickAnonymizationTab()">Research Anonymization</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link bg-white" href="#df-shape" data-toggle="tab" role="tab" onclick="onclickDFShapeTab()">DF Shape</a>
@@ -83,7 +86,10 @@
                 </li>                                   
               </ul>
               <div class="tab-content" id="pre-validation-tab-content">
-                <div class="tab-pane fade show in active" id="anonymization" role="tabpanel">
+                <div class="tab-pane fade show in active" id="dataset-preview" role="tabpanel">
+                  {{> datasetPreview}}
+                </div>
+                <div class="tab-pane fade" id="anonymization" role="tabpanel">
                   {{> anonymizationPrecheck}}
                 </div>
                 <div class="tab-pane fade" id="df-shape" role="tabpanel">
@@ -226,6 +232,7 @@
   </div>
 </div>
 
+<script type="text/javascript" src="/public/scripts/pre-validation/dataset-preview.js"></script>
 <script type="text/javascript" src="/public/scripts/pre-validation/fields-types.js"></script>
 <script type="text/javascript" src="/public/scripts/pre-validation/readme-selection.js"></script>
 <script type="text/javascript" src="/public/scripts/pre-validation/anonymization.js"></script>
@@ -251,7 +258,7 @@
   }
   .close-icon {
     cursor: pointer;
-  }   
+  }  
 </style>
 
 <link rel="stylesheet" href="/public/css/bootstrap-select.min.css"></link>
