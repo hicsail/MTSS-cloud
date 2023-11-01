@@ -52,20 +52,21 @@ if __name__ == "__main__":
     all_data = pd.read_csv(csv_path)
     imageNames = []
 
-    try:
-        fig, ax = plt.subplots(1,1, figsize=(10, 10))
-        piechart(ax, all_data, column_name, column_name + 'Distribution Pie Chart')
-        plt.savefig(os.path.join(output_path, column_name + '_pie.png'), bbox_inches='tight')        
-        imageNames.append(column_name + '_pie.png')
-    except ValueError as err:       
-        pass 
-
-    try:
-        fig, ax = plt.subplots(1,1, figsize=(10, 15))
-        historgram(ax, all_data, column_name, column_name + 'Distribution Historgram Chart')
-        plt.savefig(os.path.join(output_path, column_name + '_historgram.png'), bbox_inches='tight')
-        imageNames.append(column_name + '_historgram.png')
-    except ValueError as err:          
-        pass    
+    if all_data[column_name].dtype == 'category':
+        try:
+            fig, ax = plt.subplots(1,1, figsize=(10, 10))
+            piechart(ax, all_data, column_name, column_name + 'Distribution Pie Chart')
+            plt.savefig(os.path.join(output_path, column_name + '_pie.png'), bbox_inches='tight')        
+            imageNames.append(column_name + '_pie.png')
+        except ValueError as err:       
+            pass 
+    else:
+        try:
+            fig, ax = plt.subplots(1,1, figsize=(10, 15))
+            historgram(ax, all_data, column_name, column_name + 'Distribution Historgram Chart')
+            plt.savefig(os.path.join(output_path, column_name + '_historgram.png'), bbox_inches='tight')
+            imageNames.append(column_name + '_historgram.png')
+        except ValueError as err:          
+            pass    
                     
     print(imageNames)

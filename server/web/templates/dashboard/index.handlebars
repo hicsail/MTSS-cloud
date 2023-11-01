@@ -133,6 +133,9 @@
                 </li>
                 <li class="nav-item">
                   <a class="nav-link bg-white" href="#distribution-viz" data-toggle="tab" role="tab" onclick="onclickDistributionVizTab()">Data Distribution Visualizations</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link bg-white" href="#analytics-viz" data-toggle="tab" role="tab" onclick="onclickAnalyticsTab()">Basic Analytics Visualizations</a>
                 </li>                                                                                         
               </ul>
               <div class="tab-content" id="data-viz-tab-content">
@@ -141,7 +144,10 @@
                 </div>
                 <div class="tab-pane fade" id="distribution-viz" role="tabpanel">              
                   {{> dataDistributionViz}}
-                </div>                                                                                                
+                </div>
+                <div class="tab-pane fade" id="analytics-viz" role="tabpanel">              
+                  {{> analyticsViz}}
+                </div>                                                                                                 
               </div>  
             </div>
             <div class="modal-footer">                  
@@ -242,6 +248,7 @@
 <script type="text/javascript" src="/public/scripts/visualizations/common.js"></script>
 <script type="text/javascript" src="/public/scripts/visualizations/missingData.js"></script>
 <script type="text/javascript" src="/public/scripts/visualizations/dataDistributionViz.js"></script>
+<script type="text/javascript" src="/public/scripts/visualizations/analyticsViz.js"></script>
 <script type="text/javascript" src="/public/scripts/dashboard/index.js"></script>
 <style>
   #progressStatus {

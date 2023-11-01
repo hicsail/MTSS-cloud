@@ -573,6 +573,45 @@ const register = function (server, options) {
 
   server.route({
     method: 'PUT',
+    path: '/api/files/viz/analytics/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }        
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;          
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      const fileName = file.name;  
+      const scriptPath = Path.join(__dirname, '../python-scripts/viz/analytics_viz.py');                  
+      const dataPath = Path.join(FILES_DIR_PATH, fileName);       
+      const outputPath = Path.join(__dirname, '../web/public/viz', id);
+      let imageNames;
+
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      }            
+      
+      try {
+        imageNames = await analyticsViz(scriptPath, dataPath, outputPath);        
+      }
+      catch (e) {      
+        throw Boom.badRequest("Unable to create missing data visualizationas " + e.message);
+      }                       
+      return ({ message: 'Success', 
+              imageNames: JSON.parse(JSON.stringify(imageNames))
+            });
+    }
+  });
+
+  server.route({
+    method: 'PUT',
     path: '/api/files/viz/data_distribution/{id}',
     options: {
       auth: {
@@ -634,10 +673,8 @@ async function removeIdentifyingColumns(fileName, dataPath, identifyingCols) {
   const rows = data.split('\n');
   const headerCols = rows[0].split(',')
                             .map(str => str.replace(/"/g, '').replace(/'/g, "").trim())
-                            
-  console.log("sepideh", headerCols)                          
+                                                       
   const headerIndices = identifyingCols.map((col) => headerCols.indexOf(col));
-  console.log("arezoo", headerIndices)
   const headerLength = headerCols.length - headerIndices.length;
   
   let updatedRows = [];
@@ -760,6 +797,39 @@ async function anonymizationColumnCheck(scriptPath, dataPath) {
   }); 
 }
 
+async function analyticsViz(scriptPath, dataPath, outputPath) {
+  
+  let result = '';
+  return new Promise(async (resolve, reject) => {
+
+    try {  
+      if (!FS.existsSync(outputPath)) { //if directory for data visualziation doesn't exist        
+        FS.mkdirSync(outputPath);        
+      }            
+      const runCommand = Spawn('python3', [scriptPath, '--csv_path', dataPath, '--output_path', outputPath]);      
+      runCommand.stdout.on('data', (data) => {
+        result += data.toString();        
+      });
+      runCommand.stdout.on('end', (data) => {               
+        resolve(result);                   
+      });
+      runCommand.stderr.on('data', (data) => {                   
+        reject(data.toString());        
+      });
+      runCommand.on('error', err => {        
+        throw new Error(err.message);
+      });
+      runCommand.on('close', code => {        
+        resolve(code)
+        //throw new Error('Exit with code' + code);
+      });
+    } catch (e) {       
+      console.log(e)     
+      reject(e);
+    }
+  }); 
+}
+
 async function missingDataViz(scriptPath, dataPath, outputPath) {
   
   let result = '';
@@ -776,8 +846,7 @@ async function missingDataViz(scriptPath, dataPath, outputPath) {
       runCommand.stdout.on('end', (data) => {               
         resolve(result);                   
       });
-      runCommand.stderr.on('data', (data) => {
-        console.log(data.toString())            
+      runCommand.stderr.on('data', (data) => {                   
         reject(data.toString());        
       });
       runCommand.on('error', err => {        
@@ -810,8 +879,7 @@ async function dataDistributionViz(scriptPath, dataPath, outputPath, column) {
       runCommand.stdout.on('end', (data) => {               
         resolve(result);                   
       });
-      runCommand.stderr.on('data', (data) => {
-        console.log(data.toString())            
+      runCommand.stderr.on('data', (data) => {                   
         reject(data.toString());        
       });
       runCommand.on('error', err => {        

@@ -24,19 +24,19 @@ if __name__ == "__main__":
     imageNames = []
 
     try:
-        bar = msno.bar(all_data)
-        bar.get_figure().savefig(os.path.join(output_path, 'bar_viz.png'), bbox_inches = 'tight')
-        imageNames.append('bar_viz.png')
-    except ValueError as err:       
+        heatmap = msno.heatmap(all_data)    
+        heatmap.get_figure().savefig(os.path.join(output_path, 'heatmap_viz.png'), bbox_inches = 'tight')
+        imageNames.append('heatmap_viz.png')
+    except ValueError as err:           
         pass 
 
     try:
-        matrix = msno.matrix(all_data)
-        matrix.get_figure().savefig(os.path.join(output_path, 'matrix_viz.png'), bbox_inches = 'tight')
-        imageNames.append('matrix_viz.png')
-    except ValueError as err:          
-        pass         
-                         
+        dendrogram = msno.dendrogram(all_data)    
+        dendrogram.get_figure().savefig(os.path.join(output_path, 'dendrogram_viz.png'), bbox_inches = 'tight')
+        imageNames.append('dendrogram_viz.png')
+    except ValueError as err:           
+        pass 
+                 
     print(imageNames)
 
 
