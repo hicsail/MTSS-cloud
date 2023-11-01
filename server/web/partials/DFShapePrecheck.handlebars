@@ -3,24 +3,35 @@
     DF type and shape
   </div>
   <div class="card-body">
-    <h5 class="card-title"></h5>
-    <p class="font-weight-bold">Our system has identified that your data file has a long- format shape.</p>
-    <p>The primary distinction between wide and long formats revolves around the number of rows allocated to each participant:</p>
+    <h5 class="card-title"></h5>        
+    <p>The primary distinction between wide and long formats revolves around the number of rows allocated to each participant:</p>    
     <p class="card-text">In a <strong>long-format</strong> data file, each participant typically has multiple rows, with each row representing a different observation or measurement for that participant. This format often includes one or more "id" columns to identify each participant, accompanied by a "value" column for the observed data</p>
-    <p>In a <strong>wide-format</strong> data file, each participant is usually represented by a single row. Distinct measurements or observations for that participant are spread across multiple columns.</p>  
-    <div class="form-group w-50">
-      
-      <select class="selectpicker w-100 show-tick"
+    <p>In a <strong>wide-format</strong> data file, each participant is usually represented by a single row. Distinct measurements or observations for that participant are spread across multiple columns.</p>
+
+    <p class="font-weight-bold">Please select the participant id in the dropdown below</p>
+    <select class="selectpicker show-tick"
+            id="participant-id-select" 
+            data-live-search="true" 
+            data-style="btn-white" 
+            data-size="5"                                                    
+            data-title="Select unique identifier"
+            onchange="onchangeParticipantId(this)"                
+    >      
+    </select> 
+    <p id="df-shape-result" class="text-info font-weight-bold"></p> 
+    
+    <p class="font-weight-bold">Please select the dataset type in the dropdown below</p> 
+    <select class="selectpicker w-100 show-tick"
                 id="df-type-select" 
                 data-live-search="true" 
                 data-style="btn-white" 
                 data-size="5"                                                    
                 data-title="Select type of df"                
-        >  
-          <option value="screening">screening</option>
-          <option value="intervention">intervention</option>          
-        </select>    
-    </div>
+    >  
+      <option value="screening">screening</option>
+      <option value="intervention">intervention</option>          
+    </select>    
+    <br><br>
     <div class="row">
       <div class="col">
         <button class="btn btn-info" onclick="onclickSaveDFType()">Save</button>

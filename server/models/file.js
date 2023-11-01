@@ -124,6 +124,10 @@ File.removeIdentifyingColsPayload = Joi.object({
   identifyingCols: Joi.array().required()
 });
 
+File.DFShapePayload = Joi.object({
+  participantId: Joi.string().required()
+});
+
 File.anonymizationOnRequestPayload = Joi.object({
   anonymizationRequests: Joi.array().items(Joi.object({
     key: Joi.string().required(),

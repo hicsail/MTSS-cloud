@@ -13,6 +13,14 @@ async function getColumns(fileId) {
   return result['columns'];
 }
 
+async function anonymizationIsCompleted(fileId) {
+
+  const url = '/api/files/anonymization/' + fileId;
+  const response = await fetch(url);
+  const result = await response.json();
+  return result['anonymization'];
+}
+
 function attachOptionsToSelectElem(cols, selectId) {
 
   $("#"+ selectId).empty();

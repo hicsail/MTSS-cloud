@@ -97,7 +97,8 @@ const register = function (server, options) {
         FS.writeFileSync(dataPath, updatedContent);        
         await uploadToS3(updatedContent, fileName, file.type);             
       }
-      catch(error) {        
+      catch(error) { 
+        console.log("arezoo", error)       
         throw Boom.badRequest('Unable to perfom requested anonymization!');  
       }    
       
@@ -379,6 +380,27 @@ const register = function (server, options) {
 
   server.route({
     method: 'GET',
+    path: '/api/files/anonymization/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      return ({ message: 'Success', 'anonymization': file['preValidationSteps']['anonymization'] });
+    }
+  });
+
+  server.route({
+    method: 'GET',
     path: '/api/files/variables-hierarchy/{id}',
     options: {
       auth: {
@@ -442,6 +464,70 @@ const register = function (server, options) {
       } 
       const columns = getFileColumns(dataPath);            
       return ({columns});
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/files/dfShape/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {            
+
+      const id = request.params.id;
+      const  file = await File.findById(id);
+
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }               
+      return ({ message: 'Success', 
+                participantId: file.participantId,
+                shape: file.shape
+              });
+    }
+  });
+
+  server.route({
+    method: 'PUT',
+    path: '/api/files/dfShape/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      },
+      validate: {
+        payload: File.DFShapePayload
+      },           
+    },
+    handler: async function (request, h) {            
+
+      const id = request.params.id;
+      let file = await File.findById(id);
+      const participantId = request.payload.participantId;
+      let shape = 'wide';
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      const fileName = file.name;
+      const dataPath = Path.join(FILES_DIR_PATH, fileName);
+      if (!FS.existsSync(dataPath)) {        
+        throw Boom.badRequest("Data file wasn't found!");
+      } 
+      const multipleRows = await hasMultipleRows(dataPath, participantId); 
+      if (multipleRows) {
+        shape = 'long';
+      }  
+      const update = {
+        $set: {
+          shape: shape,
+          participantId: participantId        
+        }
+      };
+      file = await File.findByIdAndUpdate(id, update);     
+      return ({shape});
     }
   });
 
@@ -658,6 +744,29 @@ function getFileContent(dataPath) {
   return data;
 }
 
+function hasMultipleRows(dataPath, participantId) {
+
+  const data = FS.readFileSync(dataPath, {encoding:'utf8', flag:'r'});
+  const rows = data.split('\n');
+  const headerCols = rows[0].split(',')
+                            .map(str => str.replace(/"/g, '').replace(/'/g, "").trim());
+  const participantIdx = headerCols.indexOf(participantId);  
+  rows.shift();
+  let values = [];
+  for (const row of rows){
+    if (row) {
+      const val = row[participantIdx];
+      if (values.indexOf() === -1) {
+        values.push(val);
+      }
+      else {
+        return true;
+      }       
+    }
+  }
+  return false;
+}
+
 function getFileColumns(dataPath) {
 
   const data = FS.readFileSync(dataPath, {encoding:'utf8', flag:'r'});  
@@ -672,7 +781,7 @@ async function removeIdentifyingColumns(fileName, dataPath, identifyingCols) {
   const data = FS.readFileSync(dataPath, {encoding:'utf8', flag:'r'});    
   const rows = data.split('\n');
   const headerCols = rows[0].split(',')
-                            .map(str => str.replace(/"/g, '').replace(/'/g, "").trim())
+                            .map(str => str.replace(/"/g, '').replace(/'/g, "").trim());
                                                        
   const headerIndices = identifyingCols.map((col) => headerCols.indexOf(col));
   const headerLength = headerCols.length - headerIndices.length;

@@ -194,3 +194,25 @@ function onchangeEditedFileInput(elem) {
               attachFiles(elem, 'csv')
             });    
 }
+
+async function enablePreValidationTabs(fileId) {
+
+  console.log("Tabs Enabled");
+  const anonymization = await anonymizationIsCompleted(fileId)
+  if (anonymization) {
+    const ids =['df-shape', 'fields-types', 'readme-selection', 'variable-level'];
+    for (const id of ids) {
+      console.log("here", $("#" + id))
+      $("#" + id).removeClass('disabled');
+    }
+  }  
+}
+
+function onclickSubmitAnonymization() {
+   
+  const fileId = $("#file-id").val();  
+  savePreValidation('anonymization', 
+                    () => { 
+                      enablePreValidationTabs(fileId);
+                    });
+}
