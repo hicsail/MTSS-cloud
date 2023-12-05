@@ -196,23 +196,31 @@ function onchangeEditedFileInput(elem) {
 }
 
 async function enablePreValidationTabs(fileId) {
-
-  console.log("Tabs Enabled");
-  const anonymization = await anonymizationIsCompleted(fileId)
-  if (anonymization) {
-    const ids =['df-shape', 'fields-types', 'readme-selection', 'variable-level'];
-    for (const id of ids) {
-      console.log("here", $("#" + id))
-      $("#" + id).removeClass('disabled');
+      
+  $('#pre-validation-tabs a').each(function(){
+    if ($(this).hasClass('disabled')) {
+      $(this).removeClass('disabled');  
     }
-  }  
+  });      
 }
 
-function onclickSubmitAnonymization() {
+async function disablePreValidationTabs(fileId, idxList=null) {
+  
+  $('#pre-validation-tabs a').each(function(idx, val){ 
+    if ( (idxList && idxList.includes(idx)) || !idxList ) {
+      $(this).addClass('disabled'); 
+    }                   
+  });  
+}
+
+async function onclickSubmitAnonymization() {
    
-  const fileId = $("#file-id").val();  
+  const fileId = $("#file-id").val(); 
+  const anonymization = await anonymizationIsCompleted(fileId); 
   savePreValidation('anonymization', 
                     () => { 
-                      enablePreValidationTabs(fileId);
+                      if (anonymization) {
+                        enablePreValidationTabs(fileId); 
+                      }  
                     });
 }

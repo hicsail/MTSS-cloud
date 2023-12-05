@@ -2,7 +2,14 @@ async function onclickPreValidation(fileId, fileName, preValidationNotCompleted)
 
   $("#file-id").val(fileId);   
   $("#prevalidation-file-name").text(fileName); 
-  $('#pre-validation-tabs a:first').click(); //to always open the first tab   
+  $('#pre-validation-tabs a:first').click(); //to always open the first tab 
+  const anonymization = await anonymizationIsCompleted(fileId);   
+  if (anonymization) {  
+    await enablePreValidationTabs(fileId); 
+  }
+  else {
+    await disablePreValidationTabs(fileId, [2,3,4,5]);
+  }  
 }
 
 async function getColumns(fileId) {
@@ -32,7 +39,8 @@ function attachOptionsToSelectElem(cols, selectId) {
 
 function savePreValidation(stepName, successAction=null) {
   
-  const validStepNames = ['anonymization', 'dfType', 'fieldsTypes', 'readmeSelection', 'variablesHierarchy', 'uniqueIdentifier'];
+  const validStepNames = ['anonymization', 'dfType', 'fieldsTypes', 'readmeSelection',
+                         'variablesHierarchy', 'uniqueIdentifier'];
   if (!validStepNames.includes(stepName)) {    
     errorAlert('step name is not valid');
   }
@@ -65,8 +73,11 @@ function savePreValidation(stepName, successAction=null) {
 }
 
 $('#pre-validation-tabs a').click(function(){
+  if ($(this).hasClass('disabled')) {    
+    return false;
+  }
   $(this).tab('show')
-  var name = $(this).attr('href').substr(1)
+  let name = $(this).attr('href').substr(1)
   $('#pre-validation-tab-content').children().each(function(el) {    
     if (name === $(this).attr('id')) {
       $(this).addClass('active')
@@ -78,7 +89,7 @@ $('#pre-validation-tabs a').click(function(){
 
 $('#files-tabs a').click(function(){
   $(this).tab('show')
-  var name = $(this).attr('href').substr(1)
+  let name = $(this).attr('href').substr(1)
   $('#files-tabs-content').children().each(function(el) {    
     if (name === $(this).attr('id')) {
       $(this).addClass('active')
@@ -87,4 +98,3 @@ $('#files-tabs a').click(function(){
     }
   }) 
 })
-
