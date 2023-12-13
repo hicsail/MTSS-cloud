@@ -66,6 +66,7 @@ function onclickAnonymizationOnReqSave() {
 
   const fileId = $("#file-id").val();
   const tableId = 'anonymization-on-req-table';
+  const submitButtonId = "submit-anonymization-btn";
   const anonymizationRequests = anonymizationColsFromTable(tableId);  
 
   $.ajax({      
@@ -76,6 +77,7 @@ function onclickAnonymizationOnReqSave() {
     success: function (result) {               
       successAlert("Successfuly anonymized selected columns and saved file!");  
       onclickAnonymizationTab();
+      enableBtn(submitButtonId);
     },
     error: function (result) {
       errorAlert(result.responseJSON.message);
@@ -124,7 +126,8 @@ function saveUniqueIdentifier(fileId, uniqueIdentifier) {
 
 function onclickSaveRemovedCols() {
 
-  const selectId = 'remove-identifying-cols-select'; 
+  const selectId = 'remove-identifying-cols-select';
+  const submitButtonId = "submit-anonymization-btn";
   const fileId = $("#file-id").val();  
   const identifyingCols = $("#" + selectId).val(); 
   
@@ -136,6 +139,7 @@ function onclickSaveRemovedCols() {
     success: function (result) {               
       successAlert("Successfuly removed selected columns for the file!");  
       onclickAnonymizationTab();
+      enableBtn(submitButtonId);
     },
     error: function (result) {
       errorAlert(result.responseJSON.message);
@@ -145,19 +149,47 @@ function onclickSaveRemovedCols() {
 
 function onclickSaveUniqueIdentifier() {
 
-  const selectId = 'unique-identifier-select'; 
+  const selectId = 'unique-identifier-select';
+  const submitButtonId = "submit-anonymization-btn"; 
   const fileId = $("#file-id").val();  
   const uniqueIdentifier = $("#" + selectId).val();  
   savePreValidation('uniqueIdentifier', 
                     () => { 
-                      saveUniqueIdentifier(fileId, uniqueIdentifier)
+                      saveUniqueIdentifier(fileId, uniqueIdentifier);
+                      enableBtn(submitButtonId);
                     });
 }
 
-function onclickIdentifyingColUserRadio(elem) {
+function onclickRadioCollapse(elem) {
 
-  $('.collapse').collapse('hide');
+  $(elem).closest('.radio-containers').find('.collapse').each(function(){     
+    $(this).collapse('hide');
+  });
   $('#' + $(elem).attr('aria-controls')).collapse('show');
+}
+
+function enableBtn(domId) {
+
+  $("#" + domId).prop("disabled", false);  
+}
+
+function disableBtn(domId) {
+
+  $("#" + domId).prop("disabled", true);
+}
+
+function onclickNoAnonymizationRadio(elem) {
+  
+  const submitButtonId = "submit-anonymization-btn";
+  onclickRadioCollapse(elem);
+  enableBtn(submitButtonId);
+}
+
+function onclickAnonymizationRequiredRadio(elem) {
+
+  const submitButtonId = "submit-anonymization-btn";
+  onclickRadioCollapse(elem);
+  disableBtn(submitButtonId);
 }
 
 function onchangeIdentifyingColCB(elem) {

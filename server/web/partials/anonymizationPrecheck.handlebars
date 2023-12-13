@@ -1,156 +1,193 @@
-<div class="card">
-  <div class="card-header font-weight-bold">Identify columns with potentially identifying information</div>
-  <div class="card-body">    
-    <h5 class="card-title"></h5>
-    <p class="card-text">Our system has identifed the following columns to have potentially identifying information.</p>
-    <div id="identifying-cols-list" class="ml-2 font-weight-bold">                         
-    </div>           
+<div class="card">  
+  <div class="card-body">
 
-    <p class="card-text">Please make sure you data doesn't contain any identifying information by either removing the corresponding columns automatically or manually editing the dataset.</p>    
+    <div class="radio-containers">
+      <div class="form-check ml-4">
+        <input class="form-check-input" type="radio" name="anonymization-radio" id="no-anonymization" onclick="onclickNoAnonymizationRadio(this)">
+        <label class="form-check-label" for="no-anonymization">
+          I certify that my data does not contain any identifying information
+        </label>
+      </div>
+      <div class="form-check ml-4">
+        <input class="form-check-input" type="radio" name="anonymization-radio" id="anonymization-required" onclick="onclickAnonymizationRequiredRadio(this)" aria-controls="anonymization-steps-collapse">
+        <label class="form-check-label" for="anonymization-required">
+          My data requires anonymization
+        </label>
+      </div>
 
-    <div id="radio-containers" class="ml-4">
+      <div class="collapse" id="anonymization-steps-collapse">
 
-      <div class="row">
-        <div class="form-check col">
-          <input class="form-check-input" type="radio" name="identifying-col-user-action" id="remove-col-automatically" onclick="onclickIdentifyingColUserRadio(this)" aria-controls="identifying-cols-dropdown">
-          <label class="form-check-label" for="remove-col-automatically">
-            Remove selected identifying columns automatically 
-          </label>
+        <!-- Column Check -->
+        <div class="card">
+          <div class="card-header font-weight-bold">Identify columns with potentially identifying information</div>
+            <div class="card-body">    
+              <h5 class="card-title"></h5>
+              <p class="card-text">Our system has identifed the following columns to have potentially identifying information.</p>
+              <div id="identifying-cols-list" class="ml-2 font-weight-bold">                         
+              </div>           
+
+              <p class="card-text">Please make sure you data doesn't contain any identifying information by either removing the corresponding columns automatically or manually editing the dataset.</p>    
+
+              <div class="ml-4 radio-containers">
+
+                <div class="row">
+                  <div class="form-check col">
+                  <input class="form-check-input" type="radio" name="identifying-col-user-action" id="remove-col-automatically" onclick="onclickRadioCollapse(this)" aria-controls="identifying-cols-dropdown">
+                  <label class="form-check-label" for="remove-col-automatically">
+                    Remove selected identifying columns automatically 
+                  </label>
+                </div>
+                <div class="collapse col" id="identifying-cols-dropdown">
+                  <select class="selectpicker show-tick"
+                    id="remove-identifying-cols-select" 
+                    data-live-search="true" 
+                    data-style="btn-white" 
+                    data-size="5"                                                    
+                    data-title="Select columns with identifying information" 
+                    multiple               
+                  >              
+                  </select>          
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-check col">
+                  <input class="form-check-input" type="radio" name="identifying-col-user-action" id="edit-dataset" onclick="onclickRadioCollapse(this)" aria-controls="upload-revised-df">
+                  <label class="form-check-label" for="edit-dataset">
+                    Edit dataset manually
+                  </label>
+                </div>
+                <div class="collapse col" id="upload-revised-df">
+                  <input class='btn btn-sm btn-light d-none' title='' type='file' id='edited-file-input' name='attachedFile' accept='.csv' onchange='onchangeEditedFileInput(this);'/>
+                  <button class='btn btn-light btn-sm' onclick='onclickUploadEditedDF(this)'>
+                    Upload Edited DF
+                  </button> 
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <button class="btn btn-info" onclick="onclickSaveRemovedCols()">Save</button>
+              </div>
+            </div>       
+          </div>
         </div>
-        <div class="collapse col" id="identifying-cols-dropdown">
-          <select class="selectpicker show-tick"
-            id="remove-identifying-cols-select" 
-            data-live-search="true" 
-            data-style="btn-white" 
-            data-size="5"                                                    
-            data-title="Select columns with identifying information" 
-            multiple               
-          >              
-          </select>          
+
+        <!-- Anonymization On Request -->
+        <div class="card">
+          <div class="card-header font-weight-bold">
+            Anonymization on request
+          </div>
+          <div class="card-body">    
+            <p>Please select the columns that you want to anonymize. For each column, please select a type and mode.</p>
+            <div class="row" style="text-align: center;">
+              <div class="col">        
+                <select class="selectpicker show-tick"
+                    id="anonymization-on-req-column" 
+                    data-live-search="true" 
+                    data-style="btn-white" 
+                    data-size="5"                                                    
+                    data-title="Select a column"
+                  >      
+                </select>
+              </div>
+            </div><br> 
+            <div class="row" style="text-align: center;">     
+              <div class="col">
+                <select class="selectpicker show-tick"
+                  id="anonymization-on-req-type" 
+                  data-live-search="true" 
+                  data-style="btn-white" 
+                  data-size="5"                                                    
+                  data-title="Select type">
+                    <option value="NAME">NAME</option>
+                    <option value="DATE">DATE</option>
+                    <option value="AGE">AGE</option>      
+                </select>
+              </div>
+            </div><br>
+            <div class="row" style="text-align: center;">     
+              <div class="col">
+                <select class="selectpicker show-tick"
+                  id="anonymization-on-req-mode" 
+                  data-live-search="true" 
+                  data-style="btn-white" 
+                  data-size="5"                                                    
+                  data-title="Select mode">
+                    <option value="REDACT">REDACT</option>
+                    <option value="RECODE">RECODEE</option>      
+                </select>
+              </div>      
+            </div><br>
+            <div class="row" style="text-align: center;">
+              <div class="col">
+                <button class="btn btn-secondary" onclick="onclickAddAnonimizationOnReqCol()">Add Column to anonymization table</button>
+              </div>
+            </div><br>    
+            <table class="table" id="anonymization-on-req-table">
+              <thead>
+                <tr>                              
+                  <th scope="col">Column</th>                              
+                  <th scope="col">Type</th>
+                  <th scope="col">Mode</th>
+                </tr>
+              </thead>
+              <tbody id="anonymization-on-req-table-tbody">                                        
+              </tbody>
+            </table>          
+            <br>
+            <div class="row mt-2">
+              <div class="col">
+                <button class="btn btn-info" onclick="onclickAnonymizationOnReqSave()">Anonymize And Save</button>
+              </div>
+            </div>      
+          </div>
+        </div>
+
+        <!-- Unique Identifier -->
+        <div class="card">
+          <div class="card-header font-weight-bold">
+            Identifying columns as the unique identifier 
+          </div>
+          <div class="card-body">    
+            <p>Please confirm the column as the unique identifier in the dropdown below.</p>
+            <select class="selectpicker show-tick"
+              id="unique-identifier-select" 
+              data-live-search="true" 
+              data-style="btn-white" 
+              data-size="5"                                                    
+              data-title="Select unique identifier"                
+            >      
+            </select>
+            <br>
+            <div class="row mt-2">
+              <div class="col">
+                <button class="btn btn-info" onclick="onclickSaveUniqueIdentifier()">Save</button>
+              </div>
+            </div>      
+          </div>
         </div>
 
       </div>
+    </div>    
 
-      <div class="row">
-        <div class="form-check col">
-          <input class="form-check-input" type="radio" name="identifying-col-user-action" id="edit-dataset" onclick="onclickIdentifyingColUserRadio(this)" aria-controls="upload-revised-df">
-          <label class="form-check-label" for="edit-dataset">
-            Edit dataset manually
-          </label>
-        </div>
-        <div class="collapse col" id="upload-revised-df">
-          <input class='btn btn-sm btn-light d-none' title='' type='file' id='edited-file-input' name='attachedFile' accept='.csv' onchange='onchangeEditedFileInput(this);'/>
-          <button class='btn btn-light btn-sm' onclick='onclickUploadEditedDF(this)'>
-            Upload Edited DF
-          </button> 
-        </div>
-      </div>
-
-    </div>
+    <br><br>
     <div class="row">
-      <div class="col">
-        <button class="btn btn-info" onclick="onclickSaveRemovedCols()">Save</button>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <button class="btn btn-info" id="submit-anonymization-btn" onclick="onclickSubmitAnonymization()" disabled>Submit Anonymization</button>
       </div>
-    </div>       
+      <div class="col-md-4"></div>
+    </div>
+
   </div>
 </div>
-<div class="card">
-  <div class="card-header font-weight-bold">
-    Anonymization on request
-  </div>
-  <div class="card-body">    
-    <p>Please select the columns that you want to anonymize. For each column, please select a type and mode.</p>
-    <div class="row" style="text-align: center;">
-      <div class="col">        
-        <select class="selectpicker show-tick"
-            id="anonymization-on-req-column" 
-            data-live-search="true" 
-            data-style="btn-white" 
-            data-size="5"                                                    
-            data-title="Select a column"
-        >      
-        </select>
-      </div>
-    </div><br> 
-    <div class="row" style="text-align: center;">     
-      <div class="col">
-        <select class="selectpicker show-tick"
-            id="anonymization-on-req-type" 
-            data-live-search="true" 
-            data-style="btn-white" 
-            data-size="5"                                                    
-            data-title="Select type">
-              <option value="NAME">NAME</option>
-              <option value="DATE">DATE</option>
-              <option value="AGE">AGE</option>      
-        </select>
-      </div>
-    </div><br>
-    <div class="row" style="text-align: center;">     
-      <div class="col">
-        <select class="selectpicker show-tick"
-            id="anonymization-on-req-mode" 
-            data-live-search="true" 
-            data-style="btn-white" 
-            data-size="5"                                                    
-            data-title="Select mode">
-              <option value="REDACT">REDACT</option>
-              <option value="RECODE">RECODEE</option>      
-        </select>
-      </div>      
-    </div><br>
-    <div class="row" style="text-align: center;">
-      <div class="col">
-        <button class="btn btn-secondary" onclick="onclickAddAnonimizationOnReqCol()">Add Column to anonymization table</button>
-      </div>
-    </div><br>    
-    <table class="table" id="anonymization-on-req-table">
-      <thead>
-        <tr>                              
-          <th scope="col">Column</th>                              
-          <th scope="col">Type</th>
-          <th scope="col">Mode</th>
-        </tr>
-      </thead>
-      <tbody id="anonymization-on-req-table-tbody">                                        
-      </tbody>
-    </table>          
-    <br>
-    <div class="row mt-2">
-      <div class="col">
-        <button class="btn btn-info" onclick="onclickAnonymizationOnReqSave()">Anonymize And Save</button>
-      </div>
-    </div>      
-  </div>
-</div>
-<div class="card">
-  <div class="card-header font-weight-bold">
-    Identifying columns as the unique identifier 
-  </div>
-  <div class="card-body">    
-    <p>Please confirm the column as the unique identifier in the dropdown below.</p>
-    <select class="selectpicker show-tick"
-            id="unique-identifier-select" 
-            data-live-search="true" 
-            data-style="btn-white" 
-            data-size="5"                                                    
-            data-title="Select unique identifier"
-                
-    >      
-    </select>
-    <br>
-    <div class="row mt-2">
-      <div class="col">
-        <button class="btn btn-info" onclick="onclickSaveUniqueIdentifier()">Save</button>
-      </div>
-    </div>      
-  </div>
-</div>
-<br><br>
-<div class="row">
-  <div class="col-md-4"></div>
-  <div class="col-md-4">
-    <button class="btn btn-info" onclick="onclickSubmitAnonymization()">Submit Anonymization</button>
-  </div>
-  <div class="col-md-4"></div>
-</div>
+
+
+
+
+
+
+
+
+
