@@ -232,7 +232,7 @@ const register = function (server, options) {
       file = await File.findByIdAndUpdate(id, update);
       return ({ message: 'Success', doc: file });
     }
-  });
+  });  
 
   server.route({
     method: 'PUT',
@@ -282,6 +282,31 @@ const register = function (server, options) {
       }
 
       return ({ message: 'Success', 'uniqueIdentifier': file['uniqueIdentifier'] });
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/files/anonymization-flags/{id}',
+    options: {
+      auth: {
+        strategies: ['simple', 'session']
+      }          
+    },
+    handler: async function (request, h) {
+
+      const id = request.params.id;      
+
+      let file = await File.findById(id);
+      if (!file) {
+        throw Boom.notFound('File not found!');
+      }
+
+      return ({ message: 'Success', 
+                columnCheck: file['columnCheck'],
+                anonymizationOnReq: file['anonymizationOnReq'],
+                uniqueIdentifier: file['uniqueIdentifier']
+              });
     }
   });
 

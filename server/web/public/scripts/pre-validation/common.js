@@ -40,7 +40,7 @@ function attachOptionsToSelectElem(cols, selectId) {
 function savePreValidation(stepName, successAction=null) {
   
   const validStepNames = ['anonymization', 'dfType', 'fieldsTypes', 'readmeSelection',
-                         'variablesHierarchy', 'uniqueIdentifier'];
+                         'variablesHierarchy', 'uniqueIdentifier', 'columnCheck', 'anonymizationOnReq'];
   if (!validStepNames.includes(stepName)) {    
     errorAlert('step name is not valid');
   }

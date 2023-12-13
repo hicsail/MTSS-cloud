@@ -18,16 +18,26 @@ async function getHIPAAColumns(fileId) {
   return columns;
 }
 
+async function getAnonymizationFlags(fileId) {
+
+  const url = '/api/files/anonymization-flags/' + fileId;
+  const response = await fetch(url);
+  const result = await response.json();
+  return result;
+}
+
 async function onclickAnonymizationTab() {
 
   const fileId = $("#file-id").val();  
   const uniqueIdentifier = await getUniqueIdentifier(fileId);
   const HIPAAColumns = await getHIPAAColumns(fileId);
+  const anonymizationFlags = await getAnonymizationFlags(fileId);
   const selectId = 'unique-identifier-select'; 
   const removeIdentifyingSelectId = 'remove-identifying-cols-select';
   const identifiedHipaaDivId = 'identifying-cols-list'; 
+  const submitButtonId = 'submit-anonymization-btn';
   const cols = await getColumns(fileId);
-
+  
   attachOptionsToSelectElem(cols, selectId);
   $("#" + selectId).selectpicker('val', uniqueIdentifier)
   $("#" + selectId).val(uniqueIdentifier).selectpicker("refresh");
@@ -39,7 +49,17 @@ async function onclickAnonymizationTab() {
   $("#" + identifiedHipaaDivId).empty();
   for (const col of HIPAAColumns) {
     $("#" + identifiedHipaaDivId).append("<p>" + col + "</p>");
-  }   
+  }
+  if (anonymizationFlags['columnCheck'] || 
+      anonymizationFlags['anonymizationOnReq'] || 
+      anonymizationFlags['uniqueIdentifier']
+      ) 
+  {
+    enableBtn(submitButtonId);
+  }
+  else {
+    disableBtn(submitButtonId);
+  }
 }
 
 function onclickAddAnonimizationOnReqCol() {
@@ -74,10 +94,14 @@ function onclickAnonymizationOnReqSave() {
     url: '/api/files/anonymization-on-request/' + fileId, 
     contentType: 'application/json',   
     data: JSON.stringify({anonymizationRequests: anonymizationRequests}),                        
-    success: function (result) {               
-      successAlert("Successfuly anonymized selected columns and saved file!");  
-      onclickAnonymizationTab();
-      enableBtn(submitButtonId);
+    success: function (result) {                     
+      savePreValidation('anonymizationOnReq', 
+                    () => { 
+                      successAlert("Successfuly removed selected columns for the file!");  
+                      onclickAnonymizationTab();
+                      enableBtn(submitButtonId);
+                    });
+
     },
     error: function (result) {
       errorAlert(result.responseJSON.message);
@@ -136,10 +160,13 @@ function onclickSaveRemovedCols() {
     url: '/api/files/remove-identifying-cols/' + fileId, 
     contentType: 'application/json',   
     data: JSON.stringify({identifyingCols: identifyingCols}),                        
-    success: function (result) {               
-      successAlert("Successfuly removed selected columns for the file!");  
-      onclickAnonymizationTab();
-      enableBtn(submitButtonId);
+    success: function (result) {                     
+      savePreValidation('columnCheck', 
+                    () => { 
+                      successAlert("Successfuly removed selected columns for the file!");  
+                      onclickAnonymizationTab();
+                      enableBtn(submitButtonId);
+                    });
     },
     error: function (result) {
       errorAlert(result.responseJSON.message);

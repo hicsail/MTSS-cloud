@@ -70,7 +70,9 @@ class File extends AnchorModel {
       dfType: false,
       fieldsTypes: false,
       readmeSelection: false,
-      variableLevel: false
+      variableLevel: false,
+      columnCheck: false,
+      anonymizationOnReq: false
     };
   }
 }
@@ -94,7 +96,9 @@ File.preValidationStepsPayload = Joi.object({
   fieldsTypes: Joi.boolean().optional(),
   readmeSelection: Joi.boolean().optional(),
   variablesHierarchy: Joi.boolean().optional(),
-  uniqueIdentifier: Joi.boolean().optional()
+  uniqueIdentifier: Joi.boolean().optional(),
+  columnCheck: Joi.boolean().optional(),
+  anonymizationOnReq: Joi.boolean().optional()
 });
 
 File.variablesHierarchyPayload = Joi.object({
