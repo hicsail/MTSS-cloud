@@ -97,8 +97,7 @@ const register = function (server, options) {
         FS.writeFileSync(dataPath, updatedContent);        
         await uploadToS3(updatedContent, fileName, file.type);             
       }
-      catch(error) { 
-        console.log("arezoo", error)       
+      catch(error) {         
         throw Boom.badRequest('Unable to perfom requested anonymization!');  
       }    
       
@@ -301,11 +300,11 @@ const register = function (server, options) {
       if (!file) {
         throw Boom.notFound('File not found!');
       }
-
+      const preValidationSteps = file.preValidationSteps;
       return ({ message: 'Success', 
-                columnCheck: file['columnCheck'],
-                anonymizationOnReq: file['anonymizationOnReq'],
-                uniqueIdentifier: file['uniqueIdentifier']
+                columnCheck: preValidationSteps['columnCheck'],
+                anonymizationOnReq: preValidationSteps['anonymizationOnReq'],
+                uniqueIdentifier: preValidationSteps['uniqueIdentifier']
               });
     }
   });

@@ -61,7 +61,7 @@ function savePreValidation(stepName, successAction=null) {
             break;
           }
         }       
-        if (successAction) {
+        if (successAction){      
           successAction();
         }         
       },
