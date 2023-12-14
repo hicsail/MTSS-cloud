@@ -26,6 +26,28 @@ async function getAnonymizationFlags(fileId) {
   return result;
 }
 
+function onchangeIdentifyingColSelect(elem) {
+
+  const btnId = 'save-removed-columns-btn';
+  if ($(elem).val().length > 0) {
+    $("#" + btnId).removeClass('d-none');    
+  }
+  else {
+    $("#" + btnId).addClass('d-none');
+  }
+}
+
+function onchangeUniqueIdentifierSelect(elem) {
+
+  const btnId = 'save-unique-identifier-btn';
+  if ($(elem).val()) {
+    $("#" + btnId).removeClass('d-none');    
+  }
+  else {
+    $("#" + btnId).addClass('d-none');
+  }
+}
+
 async function onclickAnonymizationTab() {
 
   const fileId = $("#file-id").val();  
@@ -37,7 +59,7 @@ async function onclickAnonymizationTab() {
   const identifiedHipaaDivId = 'identifying-cols-list'; 
   const submitButtonId = 'submit-anonymization-btn';
   const cols = await getColumns(fileId);
-  
+
   attachOptionsToSelectElem(cols, selectId);
   $("#" + selectId).selectpicker('val', uniqueIdentifier)
   $("#" + selectId).val(uniqueIdentifier).selectpicker("refresh");
@@ -64,6 +86,7 @@ async function onclickAnonymizationTab() {
 
 function onclickAddAnonimizationOnReqCol() {
 
+  const saveBtnId = 'save-anonymization-on-req-btn';
   const selectDomIds = ['anonymization-on-req-column', 
                         'anonymization-on-req-type', 
                         'anonymization-on-req-mode'];
@@ -72,6 +95,11 @@ function onclickAddAnonimizationOnReqCol() {
   const type = $("#anonymization-on-req-type").val();
   const mode = $("#anonymization-on-req-mode").val();
 
+  if (!col || !type || !mode) {
+    errorAlert("You must select a column, type and mode!");
+    return;
+  }
+
   $("#anonymization-on-req-table tbody").append("<tr><td>" + col + "</td>" + 
                                           "<td>" + type + "</td>" + 
                                           "<td>" + mode + "</td>" +
@@ -79,6 +107,10 @@ function onclickAddAnonimizationOnReqCol() {
   for (const id of selectDomIds) {
     $("#" + id).val("");
     $("#" + id).selectpicker("refresh")
+  }
+
+  if (col && type && mode) {
+    $("#" + saveBtnId).removeClass('d-none');
   }
 }
 
@@ -187,6 +219,30 @@ function onclickSaveUniqueIdentifier() {
                     });
 }
 
+function onclickUploadEditedDSRadio(elem) {
+
+  onclickRadioCollapse(elem);
+  //const uploadBtn = 'upload-edited-ds-btn';
+  const removeColsBtn = 'save-removed-columns-btn';  
+  $("#" + removeColsBtn).addClass('d-none'); 
+}
+
+function onclickRemoveColsRadio(elem) {
+
+  onclickRadioCollapse(elem);
+  const uploadBtn = 'upload-edited-ds-btn';
+  const selectId = 'remove-identifying-cols-select';
+  const removeColsBtn = 'save-removed-columns-btn'; 
+
+  $("#" + uploadBtn).addClass('d-none');
+  if ($("#" + selectId).val().length > 0) {
+    $("#" + removeColsBtn).removeClass('d-none');    
+  }
+  else {
+    $("#" + removeColsBtn).addClass('d-none');
+  } 
+}
+
 function onclickRadioCollapse(elem) {
 
   $(elem).closest('.radio-containers').find('.collapse').each(function(){     
@@ -242,7 +298,16 @@ function onclickUploadEditedDF(elem) {
 
 function onchangeEditedFileInput(elem) {
 
-  const $fileId = 'file-id'; 
+  const uploadBtnId = 'upload-edited-ds-btn';
+  const files = $(elem).prop("files");
+  if (files.length > 0) {
+    $("#" + uploadBtnId).removeClass('d-none');
+  }
+  else {
+    $("#" + uploadBtnId).addClass('d-none');  
+  }
+
+  /*const $fileId = 'file-id'; 
 
   function postUploadSuccessAction() {
 
@@ -250,7 +315,28 @@ function onchangeEditedFileInput(elem) {
   }  
   deleteFile($fileId, 
             () => { 
-              attachFiles(elem, 'csv')
+              attachFiles(elem, 'csv');
+            }); */   
+}
+
+function onclickSaveEditedDF(elem) {
+
+  const $fileId = 'file-id';
+  const fileInputElem =  $("#edited-file-input");  
+
+  function postUploadSuccessAction() {
+
+    savePreValidation('columnCheck', 
+                    () => { 
+                      successAlert("Successfuly uploaded edited dataset and replaced it with original one!");  
+                      onclickAnonymizationTab();      
+                    });   
+  }  
+  
+  deleteFile($fileId, 
+            () => { 
+              attachFiles(fileInputElem, 'csv', postUploadSuccessAction);
+
             });    
 }
 

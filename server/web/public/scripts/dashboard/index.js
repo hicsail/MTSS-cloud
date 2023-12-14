@@ -78,8 +78,12 @@ function attachFiles(elem, fileType=null, successAction=null) {
         contentType: 'application/json',   
         data: JSON.stringify(filesPayload),                        
         success: function (result) {
+          
           if (successAction) {                      
-            successAction(result._id.toString());
+            if (result.length === 1) {
+              $("#file-id").val(result[0]._id.toString());  
+            }                       
+            successAction();
           }
           else {
             location.reload();  

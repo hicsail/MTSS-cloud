@@ -476,7 +476,7 @@ const register = function (server, options) {
 
       const id = request.params.id;
       const  file = await File.findById(id);
-
+      
       if (!file) {
         throw Boom.notFound('File not found!');
       }

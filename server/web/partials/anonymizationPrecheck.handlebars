@@ -32,7 +32,7 @@
 
                 <div class="row">
                   <div class="form-check col">
-                  <input class="form-check-input" type="radio" name="identifying-col-user-action" id="remove-col-automatically" onclick="onclickRadioCollapse(this)" aria-controls="identifying-cols-dropdown">
+                  <input class="form-check-input" type="radio" name="identifying-col-user-action" id="remove-col-automatically" onclick="onclickRemoveColsRadio(this)" aria-controls="identifying-cols-dropdown">
                   <label class="form-check-label" for="remove-col-automatically">
                     Remove selected identifying columns automatically 
                   </label>
@@ -44,6 +44,7 @@
                     data-style="btn-white" 
                     data-size="5"                                                    
                     data-title="Select columns with identifying information" 
+                    onchange="onchangeIdentifyingColSelect(this)"
                     multiple               
                   >              
                   </select>          
@@ -52,7 +53,7 @@
 
               <div class="row">
                 <div class="form-check col">
-                  <input class="form-check-input" type="radio" name="identifying-col-user-action" id="edit-dataset" onclick="onclickRadioCollapse(this)" aria-controls="upload-revised-df">
+                  <input class="form-check-input" type="radio" name="identifying-col-user-action" id="edit-dataset" onclick="onclickUploadEditedDSRadio(this)" aria-controls="upload-revised-df">
                   <label class="form-check-label" for="edit-dataset">
                     Edit dataset manually
                   </label>
@@ -67,7 +68,10 @@
             </div>
             <div class="row">
               <div class="col">
-                <button class="btn btn-info" onclick="onclickSaveRemovedCols()">Save</button>
+                <button id="save-removed-columns-btn" class="btn btn-info d-none" onclick="onclickSaveRemovedCols()">Save And Remove Selected Columns</button>
+              </div>
+              <div class="col">
+                <button id="upload-edited-ds-btn" class="btn btn-info d-none" onclick="onclickSaveEditedDF()">Save And Upload Edited Dataset</button>
               </div>
             </div>       
           </div>
@@ -138,7 +142,7 @@
             <br>
             <div class="row mt-2">
               <div class="col">
-                <button class="btn btn-info" onclick="onclickAnonymizationOnReqSave()">Anonymize And Save</button>
+                <button id="save-anonymization-on-req-btn" class="btn btn-info d-none" onclick="onclickAnonymizationOnReqSave()">Anonymize And Save</button>
               </div>
             </div>      
           </div>
@@ -156,13 +160,14 @@
               data-live-search="true" 
               data-style="btn-white" 
               data-size="5"                                                    
-              data-title="Select unique identifier"                
+              data-title="Select unique identifier"
+              onchange="onchangeUniqueIdentifierSelect(this)"                
             >      
             </select>
             <br>
             <div class="row mt-2">
               <div class="col">
-                <button class="btn btn-info" onclick="onclickSaveUniqueIdentifier()">Save</button>
+                <button id="save-unique-identifier-btn" class="btn btn-info d-none" onclick="onclickSaveUniqueIdentifier()">Save</button>
               </div>
             </div>      
           </div>
