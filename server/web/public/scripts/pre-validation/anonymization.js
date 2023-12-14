@@ -77,10 +77,12 @@ async function onclickAnonymizationTab() {
       anonymizationFlags['uniqueIdentifier']
       ) 
   {
-    enableBtn(submitButtonId);
+    enableBtn(submitButtonId);    
+    $("#anonymization-required").click();
   }
-  else {
+  else {    
     disableBtn(submitButtonId);
+    $("#no-anonymization").click();
   }
 }
 
@@ -268,11 +270,21 @@ function onclickNoAnonymizationRadio(elem) {
   enableBtn(submitButtonId);
 }
 
-function onclickAnonymizationRequiredRadio(elem) {
+async function onclickAnonymizationRequiredRadio(elem) {
 
+  const fileId = $("#file-id").val();
   const submitButtonId = "submit-anonymization-btn";
   onclickRadioCollapse(elem);
-  disableBtn(submitButtonId);
+  const anonymizationFlags = await getAnonymizationFlags(fileId);
+  if (anonymizationFlags['columnCheck'] || 
+      anonymizationFlags['anonymizationOnReq'] || 
+      anonymizationFlags['uniqueIdentifier']
+      ) {
+    enableBtn(submitButtonId);
+  }
+  else {
+    disableBtn(submitButtonId);  
+  }  
 }
 
 function onchangeIdentifyingColCB(elem) {

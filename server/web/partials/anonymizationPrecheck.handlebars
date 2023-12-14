@@ -3,13 +3,13 @@
 
     <div class="radio-containers">
       <div class="form-check ml-4">
-        <input class="form-check-input" type="radio" name="anonymization-radio" id="no-anonymization" onclick="onclickNoAnonymizationRadio(this)">
+        <input class="form-check-input" type="radio" name="anonymization-radio" id="no-anonymization" onchange="onclickNoAnonymizationRadio(this)">
         <label class="form-check-label" for="no-anonymization">
           I certify that my data does not contain any identifying information
         </label>
       </div>
       <div class="form-check ml-4">
-        <input class="form-check-input" type="radio" name="anonymization-radio" id="anonymization-required" onclick="onclickAnonymizationRequiredRadio(this)" aria-controls="anonymization-steps-collapse">
+        <input class="form-check-input" type="radio" name="anonymization-radio" id="anonymization-required" onchange="onclickAnonymizationRequiredRadio(this)" aria-controls="anonymization-steps-collapse">
         <label class="form-check-label" for="anonymization-required">
           My data requires anonymization
         </label>
